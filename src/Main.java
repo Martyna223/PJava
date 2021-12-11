@@ -13,6 +13,17 @@ public class Main {
             }
         }); */
 
+        JFrame beforeFrame = new JFrame();
+        beforeFrame.setTitle("Before filtration");
+        MyImage picBefore= new MyImage("image-00000.dcm");
+
+        ImageIcon image1 = new ImageIcon(picBefore.getJpgImage());
+        JLabel imageLabel1 = new JLabel(image1);
+        beforeFrame.add(imageLabel1);
+        beforeFrame.setVisible(true);
+        beforeFrame.setSize(picBefore.getWidth(), picBefore.getHeight());
+        beforeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         JFrame jpgFrame = new JFrame();
         jpgFrame.setTitle("After filtration");
         MyImage pic= new MyImage("image-00000.dcm");
@@ -27,17 +38,6 @@ public class Main {
         jpgFrame.setSize(pic.getWidth(), pic.getHeight());
         jpgFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
-        JFrame frame = new JFrame();
-        frame.setTitle("Before filtration");
-        MyImage pic1= new MyImage("image-00000.dcm");
-
-        ImageIcon image1 = new ImageIcon(pic.getJpgImage());
-        JLabel imageLabel1 = new JLabel(image1);
-        frame.add(imageLabel1);
-        frame.setVisible(true);
-        frame.setSize(pic.getWidth(), pic.getHeight());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
 }
