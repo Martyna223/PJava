@@ -32,6 +32,10 @@ public class MyImage {
         }
     }
 
+    public void setJpgImage(BufferedImage image){
+        jpgImage=image;
+    }
+
     public int getWidth(){
         return jpgImage.getWidth();
     }
@@ -274,8 +278,5 @@ public class MyImage {
             jpgImage.setRGB(i, jpgImage.getHeight()-1, newColor);
         }
     }
-
-
-
 
 }

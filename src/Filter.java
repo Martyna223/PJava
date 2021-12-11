@@ -44,6 +44,8 @@ public class Filter {
         setFilter(0, -1, 0, -1, 5, -1, 0, -1, 0);
     }
 
+    public void HPFilter(){ setFilter(-1, -1, -1, -1, 14, -1, -1, -1,-1);}
+
 
     public int[][] getMask(){
         return mask;
