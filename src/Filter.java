@@ -41,10 +41,10 @@ public class Filter {
     }
 
     public void standardHighPassFilter() {
-        setFilter(0, -1, 0, -1, 5, -1, 0, -1, 0);
+        setFilter(-1, -1, -1, -1, 14, -1, -1, -1,-1);
     }
 
-    public void HPFilter(){ setFilter(-1, -1, -1, -1, 14, -1, -1, -1,-1);}
+   // public void HPFilter(){ setFilter(-1, -1, -1, -1, 14, -1, -1, -1,-1);}
 
 
     public int[][] getMask(){
@@ -52,6 +52,7 @@ public class Filter {
     }
 
     public void setSum() {
+        sum=0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 sum = sum + mask[i][j];
@@ -71,6 +72,7 @@ public class Filter {
     }
 
     public void setRightUpSum() {
+        sumRU=0;
         sumRU= mask[0][2]+mask[0][1]+mask[1][2]+mask[1][1];
         if (sumRU < 1) {
             sumRU = 1;
@@ -78,6 +80,7 @@ public class Filter {
     }
 
     public void setLeftUpSum() {
+        sumLU=0;
         sumLU= mask[0][0]+mask[0][1]+mask[1][0]+mask[1][1];
         if (sumLU < 1) {
             sumLU = 1;
@@ -85,6 +88,7 @@ public class Filter {
     }
 
     public void setRightDownSum() {
+        sumRD=0;
         sumRD= mask[2][2]+mask[2][1]+mask[1][1]+mask[1][2];
         if (sumRD < 1) {
             sumRD = 1;
@@ -92,6 +96,7 @@ public class Filter {
     }
 
     public void setLeftDownSum() {
+        sumLD=0;
         sumLD= mask[2][0]+mask[1][0]+mask[2][1]+mask[1][1];
         if (sumLD < 1) {
             sumLD = 1;
@@ -99,6 +104,7 @@ public class Filter {
     }
 
     public void setUpSum() {
+        sumU=0;
         for (int i = 1; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 sumU = sumU + mask[i][j];
@@ -110,6 +116,7 @@ public class Filter {
     }
 
     public void setLeftSum() {
+        sumL=0;
         for (int i = 0; i < 3; i++) {
             for (int j = 1; j < 3; j++) {
                 sumL = sumL + mask[i][j];
@@ -121,6 +128,7 @@ public class Filter {
     }
 
     public void setRightSum() {
+        sumR=0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 2; j++) {
                 sumR = sumR + mask[i][j];
@@ -132,6 +140,7 @@ public class Filter {
     }
 
     public void setDownSum() {
+        sumD=0;
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 3; j++) {
                 sumD = sumD + mask[i][j];

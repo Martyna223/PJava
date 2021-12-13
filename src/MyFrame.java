@@ -77,7 +77,7 @@ public class MyFrame extends JFrame implements ActionListener{
             //button1.setEnabled(false);
             panel2.setVisible(true);
         } else if(e.getSource()==button2) {
-            filter.HPFilter();
+            filter.standardHighPassFilter();
             panel2.setVisible(false);
             picAfter.addFilter(filter);
            // button2.setEnabled(false);
