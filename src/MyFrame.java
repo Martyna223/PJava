@@ -21,10 +21,10 @@ public class MyFrame extends JFrame implements ActionListener{
         this.setVisible(true);
 
         picBefore= new MyImage("image-00000.dcm");
-        ImageIcon image1 = new ImageIcon(picBefore.getJpgImage());
+        ImageIcon image1 = new ImageIcon(picBefore.getPngImage());
 
         picAfter= new MyImage("image-00000.dcm");
-        ImageIcon image2 = new ImageIcon(picAfter.getJpgImage());
+        ImageIcon image2 = new ImageIcon(picAfter.getPngImage());
         filter= new Filter();
 
         button1= new JButton();

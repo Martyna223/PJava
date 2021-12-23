@@ -1,55 +1,60 @@
 import com.pixelmed.display.SourceImage;
 import reader.OverriddenSingleImagePanelForDemo;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 
 public class MyImage {
-    private Filter filter= new Filter();
-    private static BufferedImage jpgImage;
+
+    public static BufferedImage pngImage;
 
     public MyImage(String fileName) {
         String dicomInputFile = fileName;
         try {
             SourceImage sImg = new SourceImage(dicomInputFile);
             OverriddenSingleImagePanelForDemo singleImagePanel = new OverriddenSingleImagePanelForDemo(sImg);
-            jpgImage = sImg.getBufferedImage();
+            pngImage = sImg.getBufferedImage();
 
         } catch (Exception e) {
-            e.printStackTrace(); //in real life, do something about this exception
+            e.printStackTrace();
         }
     }
 
-    public void setJpgImage(String fileName){
+    public void setPngImage(String fileName){
         String dicomInputFile = fileName;
         try {
             SourceImage sImg = new SourceImage(dicomInputFile);
             OverriddenSingleImagePanelForDemo singleImagePanel = new OverriddenSingleImagePanelForDemo(sImg);
-            jpgImage = sImg.getBufferedImage();
+            pngImage = sImg.getBufferedImage();
 
         } catch (Exception e) {
-            e.printStackTrace(); //in real life, do something about this exception
+            e.printStackTrace();
         }
     }
 
-    public void setJpgImage(BufferedImage image){
-        jpgImage=image;
+    public void setPngImage(BufferedImage image){
+        pngImage =image;
     }
 
     public int getWidth(){
-        return jpgImage.getWidth();
+        return pngImage.getWidth();
     }
 
     public int getHeight(){
-        return jpgImage.getHeight();
+        return pngImage.getHeight();
     }
 
-    public BufferedImage getJpgImage(){
-        return jpgImage;
+    public BufferedImage getPngImage(){
+        return pngImage;
     }
 
-    public void getPixelColor(int x, int y){
-        int clr = jpgImage.getRGB(x, y);
+    public void getPixelColor(int x, int y, BufferedImage image){
+        int clr = image.getRGB(x, y);
         int red =   (clr & 0x00ff0000) >> 16;
         int green = (clr & 0x0000ff00) >> 8;
         int blue =   clr & 0x000000ff;
@@ -58,22 +63,21 @@ public class MyImage {
         System.out.println("Blue Color value = " + blue);
     }
 
-    public int getRedPixelComponent(int x, int y){
-        int clr = jpgImage.getRGB(x, y);
+    public int getRedPixelComponent(int x, int y, BufferedImage image){
+        int clr = image.getRGB(x, y);
         int red =   (clr & 0x00ff0000) >> 16;
         return red;
     }
 
 
-    public int getGreenPixelComponent(int x, int y){
-        int clr = jpgImage.getRGB(x, y);
+    public int getGreenPixelComponent(int x, int y, BufferedImage image){
+        int clr = image.getRGB(x, y);
         int green = (clr & 0x0000ff00) >> 8;
         return green;
     }
 
-
-    public int getBluePixelComponent(int x, int y){
-        int clr = jpgImage.getRGB(x, y);
+    public int getBluePixelComponent(int x, int y, BufferedImage image){
+        int clr = image.getRGB(x, y);
         int blue =   clr & 0x000000ff;
         return blue;
     }
@@ -85,198 +89,212 @@ public class MyImage {
         if(newColor>255){
             newColor=255;
         }
+
         return newColor;
     }
 
-    public void addFilter(Filter newfilter) {
+    static BufferedImage copyImage(BufferedImage image) {
+        ColorModel cm = image.getColorModel();
+        boolean isRasterPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = image.copyData(null);
+        return new BufferedImage(cm, raster, isRasterPremultiplied, null);
+    }
+
+    public void addFilter(Filter filter){
+        BufferedImage imageBefore= this.copyImage(pngImage);
         int newColorRed;
         int newColorGreen;
         int newColorBlue;
         int newColor;
-        filter.setFilter(newfilter);
-        for (int j = 1; j < jpgImage.getHeight() - 1; j++) {
-            for (int i = 1; i < jpgImage.getWidth() - 1; i++) {
 
-                newColorRed = filter.mask[0][0] * getRedPixelComponent(i - 1, j - 1) + filter.mask[0][1] * getRedPixelComponent(i - 1, j) + filter.mask[0][2] * getRedPixelComponent(i - 1, j + 1) + filter.mask[1][0] * getRedPixelComponent(i, j - 1) + filter.mask[1][1] * getRedPixelComponent(i, j) + filter.mask[1][2] * getRedPixelComponent(i, j + 1) + filter.mask[2][0] * getRedPixelComponent(i + 1, j - 1) + filter.mask[2][1] * getRedPixelComponent(i + 1, j) + filter.mask[2][2] * getRedPixelComponent(i + 1, j + 1);
-                newColorRed = newColorRed / filter.sum;
+        for (int j = 1; j < pngImage.getHeight() - 1; j++) {
+            for (int i = 1; i < pngImage.getWidth() - 1; i++) {
+
+                newColorRed = filter.mask[0][0] * getRedPixelComponent(i - 1, j - 1, imageBefore) + filter.mask[0][1] * getRedPixelComponent(i - 1, j, imageBefore) + filter.mask[0][2] * getRedPixelComponent(i - 1, j + 1, imageBefore) + filter.mask[1][0] * getRedPixelComponent(i, j - 1, imageBefore) + filter.mask[1][1] * getRedPixelComponent(i, j, imageBefore) + filter.mask[1][2] * getRedPixelComponent(i, j + 1, imageBefore) + filter.mask[2][0] * getRedPixelComponent(i + 1, j - 1, imageBefore) + filter.mask[2][1] * getRedPixelComponent(i + 1, j, imageBefore) + filter.mask[2][2] * getRedPixelComponent(i + 1, j + 1, imageBefore);
+                newColorRed = newColorRed/filter.sums[1][1];
                 newColorRed=checkColor(newColorRed);
 
-                newColorGreen = filter.mask[0][0] * getGreenPixelComponent(i - 1, j - 1) + filter.mask[0][1] * getGreenPixelComponent(i - 1, j) + filter.mask[0][2] * getGreenPixelComponent(i - 1, j + 1) + filter.mask[1][0] * getGreenPixelComponent(i, j - 1) + filter.mask[1][1] * getGreenPixelComponent(i, j) + filter.mask[1][2] * getGreenPixelComponent(i, j + 1) + filter.mask[2][0] * getGreenPixelComponent(i + 1, j - 1) + filter.mask[2][1] * getGreenPixelComponent(i + 1, j) + filter.mask[2][2] * getGreenPixelComponent(i + 1, j + 1);
-                newColorGreen = newColorGreen / filter.sum;
+                newColorGreen = filter.mask[0][0] * getGreenPixelComponent(i - 1, j - 1, imageBefore) + filter.mask[0][1] * getGreenPixelComponent(i - 1, j, imageBefore) + filter.mask[0][2] * getGreenPixelComponent(i - 1, j + 1, imageBefore) + filter.mask[1][0] * getGreenPixelComponent(i, j - 1, imageBefore) + filter.mask[1][1] * getGreenPixelComponent(i, j, imageBefore) + filter.mask[1][2] * getGreenPixelComponent(i, j + 1, imageBefore) + filter.mask[2][0] * getGreenPixelComponent(i + 1, j - 1, imageBefore) + filter.mask[2][1] * getGreenPixelComponent(i + 1, j, imageBefore) + filter.mask[2][2] * getGreenPixelComponent(i + 1, j + 1, imageBefore);
+                newColorGreen = newColorGreen/filter.sums[1][1];
                 newColorGreen=checkColor(newColorGreen);
 
-                newColorBlue = filter.mask[0][0] * getBluePixelComponent(i - 1, j - 1) + filter.mask[0][1] * getBluePixelComponent(i - 1, j) + filter.mask[0][2] * getBluePixelComponent(i - 1, j + 1) + filter.mask[1][0] * getBluePixelComponent(i, j - 1) + filter.mask[1][1] * getBluePixelComponent(i, j) + filter.mask[1][2] * getBluePixelComponent(i, j + 1) + filter.mask[2][0] * getBluePixelComponent(i + 1, j - 1) + filter.mask[2][1] * getBluePixelComponent(i + 1, j) + filter.mask[2][2] * getBluePixelComponent(i + 1, j + 1);
-                newColorBlue = newColorBlue / filter.sum;
-                newColorBlue=checkColor(newColorBlue);
+                newColorBlue = filter.mask[0][0] * getBluePixelComponent(i - 1, j - 1, imageBefore) + filter.mask[0][1] * getBluePixelComponent(i - 1, j,imageBefore) + filter.mask[0][2] * getBluePixelComponent(i - 1, j + 1, imageBefore) + filter.mask[1][0] * getBluePixelComponent(i, j - 1, imageBefore) + filter.mask[1][1] * getBluePixelComponent(i, j, imageBefore) + filter.mask[1][2] * getBluePixelComponent(i, j + 1, imageBefore) + filter.mask[2][0] * getBluePixelComponent(i + 1, j - 1, imageBefore) + filter.mask[2][1] * getBluePixelComponent(i + 1, j, imageBefore) + filter.mask[2][2] * getBluePixelComponent(i + 1, j + 1, imageBefore);
+                newColorBlue = newColorBlue/filter.sums[1][1];
+                newColorBlue= checkColor(newColorBlue);
 
                 Color color = new Color(newColorRed, newColorGreen, newColorBlue);
                 newColor = color.getRGB();
-                jpgImage.setRGB(i, j, newColor);
+                pngImage.setRGB(i, j, newColor);
             }
         }
-        filterInCorners(newfilter);
-        filterOnEdge(newfilter);
+
+        filterInCorners(filter);
+        filterOnEdge(filter);
     }
 
-
-    public void filterInCorners(Filter newfilter) {
+    public void filterInCorners(Filter filter) {
         int newColorRed;
         int newColorGreen;
         int newColorBlue;
         int newColor;
-        filter.setFilter(newfilter);
+        BufferedImage imageBefore= this.copyImage(pngImage);
 
         // left-up corner
-        newColorRed= filter.mask[1][1]* getRedPixelComponent(0, 0)+filter.mask[1][2]* getRedPixelComponent(0,1)+filter.mask[2][1]* getRedPixelComponent(1, 0)+filter.mask[2][2]* getRedPixelComponent(1, 1);
-        newColorRed=newColorRed/filter.sumLU;
+        newColorRed= filter.mask[1][1]* getRedPixelComponent(0, 0, imageBefore)+filter.mask[1][2]* getRedPixelComponent(0,1, imageBefore)+filter.mask[2][1]* getRedPixelComponent(1, 0, imageBefore)+filter.mask[2][2]* getRedPixelComponent(1, 1, imageBefore);
+        newColorRed=newColorRed/filter.sums[0][0];
         newColorRed=checkColor(newColorRed);
 
-        newColorGreen= filter.mask[1][1]* getGreenPixelComponent(0, 0)+filter.mask[1][2]* getGreenPixelComponent(0,1)+filter.mask[2][1]* getGreenPixelComponent(1, 0)+filter.mask[2][2]* getGreenPixelComponent(1, 1);
-        newColorGreen=newColorGreen/filter.sumLU;
+        newColorGreen= filter.mask[1][1]* getGreenPixelComponent(0, 0, imageBefore)+filter.mask[1][2]* getGreenPixelComponent(0,1, imageBefore)+filter.mask[2][1]* getGreenPixelComponent(1, 0, imageBefore)+filter.mask[2][2]* getGreenPixelComponent(1, 1, imageBefore);
+        newColorGreen=newColorGreen/filter.sums[0][0];
         newColorGreen=checkColor(newColorGreen);
 
-        newColorBlue= filter.mask[1][1]* getBluePixelComponent(0, 0)+filter.mask[1][2]* getBluePixelComponent(0,1)+filter.mask[2][1]* getBluePixelComponent(1, 0)+filter.mask[2][2]* getBluePixelComponent(1, 1);
-        newColorBlue=newColorBlue/filter.sumLU;
+        newColorBlue= filter.mask[1][1]* getBluePixelComponent(0, 0, imageBefore)+filter.mask[1][2]* getBluePixelComponent(0,1, imageBefore)+filter.mask[2][1]* getBluePixelComponent(1, 0, imageBefore)+filter.mask[2][2]* getBluePixelComponent(1, 1, imageBefore);
+        newColorBlue=newColorBlue/filter.sums[0][0];
         newColorBlue=checkColor(newColorBlue);
 
         Color colorLU=new Color(newColorRed,newColorGreen,newColorBlue);
         newColor= colorLU.getRGB();
-        jpgImage.setRGB(0,0,newColor);
+        pngImage.setRGB(0,0,newColor);
 
         //right-up corner
-        newColorRed= filter.mask[1][1]* getRedPixelComponent(jpgImage.getWidth()-1, 0)+filter.mask[1][0]* getRedPixelComponent(jpgImage.getWidth()-2,0)+filter.mask[2][0]* getRedPixelComponent(jpgImage.getWidth()-2, 1 )+filter.mask[2][1]* getRedPixelComponent(jpgImage.getWidth()-1, 1);
-        newColorRed=newColorRed/ filter.sumRU;
+        newColorRed= filter.mask[1][1]* getRedPixelComponent(pngImage.getWidth()-1, 0, imageBefore)+filter.mask[1][0]* getRedPixelComponent(pngImage.getWidth()-2,0, imageBefore)+filter.mask[2][0]* getRedPixelComponent(pngImage.getWidth()-2, 1, imageBefore)+filter.mask[2][1]* getRedPixelComponent(pngImage.getWidth()-1, 1, imageBefore);
+        newColorRed=newColorRed/filter.sums[0][2];
         newColorRed=checkColor(newColorRed);
 
-        newColorGreen= filter.mask[1][1]* getGreenPixelComponent(jpgImage.getWidth()-1, 0)+filter.mask[1][0]* getGreenPixelComponent(jpgImage.getWidth()-2,0)+filter.mask[2][0]* getGreenPixelComponent(jpgImage.getWidth()-2, 1 )+filter.mask[2][1]* getGreenPixelComponent(jpgImage.getWidth()-1, 1);
-        newColorGreen=newColorGreen/ filter.sumRU;
+        newColorGreen= filter.mask[1][1]* getGreenPixelComponent(pngImage.getWidth()-1, 0, imageBefore)+filter.mask[1][0]* getGreenPixelComponent(pngImage.getWidth()-2,0, imageBefore)+filter.mask[2][0]* getGreenPixelComponent(pngImage.getWidth()-2, 1, imageBefore)+filter.mask[2][1]* getGreenPixelComponent(pngImage.getWidth()-1, 1, imageBefore);
+        newColorGreen=newColorGreen/filter.sums[0][2];
         newColorGreen=checkColor(newColorGreen);
 
-        newColorBlue= filter.mask[1][1]* getBluePixelComponent(jpgImage.getWidth()-1, 0)+filter.mask[1][0]* getBluePixelComponent(jpgImage.getWidth()-2,0)+filter.mask[2][0]* getBluePixelComponent(jpgImage.getWidth()-2, 1 )+filter.mask[2][1]* getBluePixelComponent(jpgImage.getWidth()-1, 1);
-        newColorBlue=newColorBlue/ filter.sumRU;
+        newColorBlue= filter.mask[1][1]* getBluePixelComponent(pngImage.getWidth()-1, 0, imageBefore)+filter.mask[1][0]* getBluePixelComponent(pngImage.getWidth()-2,0,imageBefore)+filter.mask[2][0]* getBluePixelComponent(pngImage.getWidth()-2, 1, imageBefore)+filter.mask[2][1]* getBluePixelComponent(pngImage.getWidth()-1, 1, imageBefore);
+        newColorBlue=newColorBlue/filter.sums[0][2];
         newColorBlue=checkColor(newColorBlue);
 
         Color colorRU=new Color(newColorRed,newColorGreen,newColorBlue);
         newColor= colorRU.getRGB();
-        jpgImage.setRGB(jpgImage.getWidth()-1,0,newColor);
+        pngImage.setRGB(pngImage.getWidth()-1,0,newColor);
 
         //left-down corner
-        newColorRed= filter.mask[1][1]* getRedPixelComponent(0, jpgImage.getHeight()-1)+filter.mask[0][1]* getRedPixelComponent(0,jpgImage.getHeight()-2)+filter.mask[0][2]* getRedPixelComponent(1, jpgImage.getHeight()-2)+filter.mask[2][2]* getRedPixelComponent(1, jpgImage.getHeight()-1);
-        newColorRed=newColorRed/ filter.sumLD;
+        newColorRed= filter.mask[1][1]* getRedPixelComponent(0, pngImage.getHeight()-1, imageBefore)+filter.mask[0][1]* getRedPixelComponent(0, pngImage.getHeight()-2, imageBefore)+filter.mask[0][2]* getRedPixelComponent(1, pngImage.getHeight()-2, imageBefore)+filter.mask[2][2]* getRedPixelComponent(1, pngImage.getHeight()-1, imageBefore);
+        newColorRed=newColorRed/filter.sums[2][0];
         newColorRed=checkColor(newColorRed);
 
-        newColorGreen= filter.mask[1][1]* getGreenPixelComponent(0, jpgImage.getHeight()-1)+filter.mask[0][1]* getGreenPixelComponent(0,jpgImage.getHeight()-2)+filter.mask[0][2]* getGreenPixelComponent(1, jpgImage.getHeight()-2)+filter.mask[2][2]* getGreenPixelComponent(1, jpgImage.getHeight()-1);
-        newColorGreen=newColorGreen/ filter.sumLD;
+        newColorGreen= filter.mask[1][1]* getGreenPixelComponent(0, pngImage.getHeight()-1, imageBefore)+filter.mask[0][1]* getGreenPixelComponent(0, pngImage.getHeight()-2, imageBefore)+filter.mask[0][2]* getGreenPixelComponent(1, pngImage.getHeight()-2, imageBefore)+filter.mask[2][2]* getGreenPixelComponent(1, pngImage.getHeight()-1, imageBefore);
+        newColorGreen=newColorGreen/filter.sums[2][0];
         newColorGreen=checkColor(newColorGreen);
 
-        newColorBlue= filter.mask[1][1]* getBluePixelComponent(0, jpgImage.getHeight()-1)+filter.mask[0][1]* getBluePixelComponent(0,jpgImage.getHeight()-2)+filter.mask[0][2]* getBluePixelComponent(1, jpgImage.getHeight()-2)+filter.mask[2][2]* getBluePixelComponent(1, jpgImage.getHeight()-1);
-        newColorBlue=newColorBlue/ filter.sumLD;
+        newColorBlue= filter.mask[1][1]* getBluePixelComponent(0, pngImage.getHeight()-1, imageBefore)+filter.mask[0][1]* getBluePixelComponent(0, pngImage.getHeight()-2, imageBefore)+filter.mask[0][2]* getBluePixelComponent(1, pngImage.getHeight()-2, imageBefore)+filter.mask[2][2]* getBluePixelComponent(1, pngImage.getHeight()-1, imageBefore);
+        newColorBlue=newColorBlue/filter.sums[2][0];
         newColorBlue=checkColor(newColorBlue);
 
         Color colorLD=new Color(newColorRed,newColorGreen,newColorBlue);
         newColor= colorLD.getRGB();
-        jpgImage.setRGB(0,jpgImage.getHeight()-1,newColor);
+        pngImage.setRGB(0, pngImage.getHeight()-1,newColor);
 
         //right-down corner
-        newColorRed= filter.mask[1][1]* getRedPixelComponent(jpgImage.getWidth()-1, jpgImage.getHeight()-1)+filter.mask[1][0]* getRedPixelComponent(jpgImage.getWidth()-2,jpgImage.getHeight()-1)+filter.mask[0][0]* getRedPixelComponent(jpgImage.getWidth()-2, jpgImage.getHeight()-2)+filter.mask[0][1]* getRedPixelComponent(jpgImage.getWidth()-1, jpgImage.getHeight()-2);
-        newColorRed=newColorRed/ filter.sumRD;
+        newColorRed= filter.mask[1][1]* getRedPixelComponent(pngImage.getWidth()-1, pngImage.getHeight()-1, imageBefore)+filter.mask[1][0]* getRedPixelComponent(pngImage.getWidth()-2, pngImage.getHeight()-1, imageBefore)+filter.mask[0][0]* getRedPixelComponent(pngImage.getWidth()-2, pngImage.getHeight()-2, imageBefore)+filter.mask[0][1]* getRedPixelComponent(pngImage.getWidth()-1, pngImage.getHeight()-2, imageBefore);
+        newColorRed=newColorRed/filter.sums[2][2];
         newColorRed=checkColor(newColorRed);
 
-        newColorGreen= filter.mask[1][1]* getGreenPixelComponent(jpgImage.getWidth()-1, jpgImage.getHeight()-1)+filter.mask[1][0]* getGreenPixelComponent(jpgImage.getWidth()-2,jpgImage.getHeight()-1)+filter.mask[0][0]* getGreenPixelComponent(jpgImage.getWidth()-2, jpgImage.getHeight()-2 )+filter.mask[0][1]* getGreenPixelComponent(jpgImage.getWidth()-1, jpgImage.getHeight()-2);
-        newColorGreen=newColorGreen/ filter.sumRD;
+        newColorGreen= filter.mask[1][1]* getGreenPixelComponent(pngImage.getWidth()-1, pngImage.getHeight()-1, imageBefore)+filter.mask[1][0]* getGreenPixelComponent(pngImage.getWidth()-2, pngImage.getHeight()-1, imageBefore)+filter.mask[0][0]* getGreenPixelComponent(pngImage.getWidth()-2, pngImage.getHeight()-2, imageBefore)+filter.mask[0][1]* getGreenPixelComponent(pngImage.getWidth()-1, pngImage.getHeight()-2, imageBefore);
+        newColorGreen=newColorGreen/filter.sums[2][2];
         newColorGreen=checkColor(newColorGreen);
 
-        newColorBlue= filter.mask[1][1]* getBluePixelComponent(jpgImage.getWidth()-1, jpgImage.getHeight()-1)+filter.mask[1][0]* getBluePixelComponent(jpgImage.getWidth()-2,jpgImage.getHeight()-1)+filter.mask[0][0]* getBluePixelComponent(jpgImage.getWidth()-2, jpgImage.getHeight()-2)+filter.mask[0][1]* getBluePixelComponent(jpgImage.getWidth()-1, jpgImage.getHeight()-2);
-        newColorBlue=newColorBlue/ filter.sumRD;
+        newColorBlue= filter.mask[1][1]* getBluePixelComponent(pngImage.getWidth()-1, pngImage.getHeight()-1, imageBefore)+filter.mask[1][0]* getBluePixelComponent(pngImage.getWidth()-2, pngImage.getHeight()-1, imageBefore)+filter.mask[0][0]* getBluePixelComponent(pngImage.getWidth()-2, pngImage.getHeight()-2, imageBefore)+filter.mask[0][1]* getBluePixelComponent(pngImage.getWidth()-1, pngImage.getHeight()-2, imageBefore);
+        newColorBlue=newColorBlue/filter.sums[2][2];
         newColorBlue=checkColor(newColorBlue);
 
         Color colorRD=new Color(newColorRed,newColorGreen,newColorBlue);
         newColor= colorRD.getRGB();
-        jpgImage.setRGB(jpgImage.getWidth()-1,jpgImage.getHeight()-1,newColor);
+        pngImage.setRGB(pngImage.getWidth()-1, pngImage.getHeight()-1,newColor);
     }
 
-    public void filterOnEdge(Filter newfilter) {
+    public void filterOnEdge(Filter filter) {
         int newColorRed;
         int newColorGreen;
         int newColorBlue;
         int newColor;
-        filter.setFilter(newfilter);
+        BufferedImage imageBefore= this.copyImage(pngImage);
 
         // up
-        for (int i = 1; i < jpgImage.getWidth() - 1; i++) {
-            newColorRed = filter.mask[1][0] * getRedPixelComponent(i-1, 0) + filter.mask[1][1] * getRedPixelComponent(i, 0) + filter.mask[1][2] * getRedPixelComponent(i+1, 0) + filter.mask[2][0] * getRedPixelComponent(i-1, 1) + filter.mask[2][1] * getRedPixelComponent(i, 1) + filter.mask[2][2] * getRedPixelComponent( i+1, 1);
-            newColorRed = newColorRed / filter.sumU;
+        for (int i = 1; i < pngImage.getWidth() - 1; i++) {
+            newColorRed = filter.mask[1][0] * getRedPixelComponent(i-1, 0, imageBefore) + filter.mask[1][1] * getRedPixelComponent(i, 0, imageBefore) + filter.mask[1][2] * getRedPixelComponent(i+1, 0, imageBefore) + filter.mask[2][0] * getRedPixelComponent(i-1, 1, imageBefore) + filter.mask[2][1] * getRedPixelComponent(i, 1, imageBefore) + filter.mask[2][2] * getRedPixelComponent( i+1, 1, imageBefore);
+            newColorRed = newColorRed/filter.sums[0][1];
             newColorRed = checkColor(newColorRed);
 
-            newColorGreen = filter.mask[1][0] * getGreenPixelComponent(i-1, 0) + filter.mask[1][1] * getGreenPixelComponent(i, 0) + filter.mask[1][2] * getGreenPixelComponent(i+1, 0) + filter.mask[2][0] * getGreenPixelComponent(i-1, 1) + filter.mask[2][1] * getGreenPixelComponent(i, 1) + filter.mask[2][2] * getGreenPixelComponent( i+1, 1);
-            newColorGreen = newColorGreen / filter.sumU;
+            newColorGreen = filter.mask[1][0] * getGreenPixelComponent(i-1, 0, imageBefore) + filter.mask[1][1] * getGreenPixelComponent(i, 0, imageBefore) + filter.mask[1][2] * getGreenPixelComponent(i+1, 0, imageBefore) + filter.mask[2][0] * getGreenPixelComponent(i-1, 1, imageBefore) + filter.mask[2][1] * getGreenPixelComponent(i, 1, imageBefore) + filter.mask[2][2] * getGreenPixelComponent( i+1, 1, imageBefore);
+            newColorGreen = newColorGreen/filter.sums[0][1];
             newColorGreen = checkColor(newColorGreen);
 
-            newColorBlue = filter.mask[1][0] * getBluePixelComponent(i-1, 0) + filter.mask[1][1] * getBluePixelComponent(i, 0) + filter.mask[1][2] * getBluePixelComponent(i+1, 0) + filter.mask[2][0] * getBluePixelComponent(i-1, 1) + filter.mask[2][1] * getBluePixelComponent(i, 1) + filter.mask[2][2] * getBluePixelComponent( i+1, 1);
-            newColorBlue = newColorBlue / filter.sumU;
+            newColorBlue = filter.mask[1][0] * getBluePixelComponent(i-1, 0, imageBefore) + filter.mask[1][1] * getBluePixelComponent(i, 0, imageBefore) + filter.mask[1][2] * getBluePixelComponent(i+1, 0, imageBefore) + filter.mask[2][0] * getBluePixelComponent(i-1, 1, imageBefore) + filter.mask[2][1] * getBluePixelComponent(i, 1, imageBefore) + filter.mask[2][2] * getBluePixelComponent( i+1, 1, imageBefore);
+            newColorBlue = newColorBlue/filter.sums[0][1];
             newColorBlue = checkColor(newColorBlue);
 
             Color color = new Color(newColorRed, newColorGreen, newColorBlue);
             newColor = color.getRGB();
-            jpgImage.setRGB(i, 0, newColor);
+            pngImage.setRGB(i, 0, newColor);
         }
 
         //left
-        for (int j = 1; j < jpgImage.getHeight() - 1; j++) {
-            newColorRed = filter.mask[0][1] * getRedPixelComponent(0, j-1) + filter.mask[0][2] * getRedPixelComponent( 1, j + 1) + filter.mask[1][1] * getRedPixelComponent(0, j) + filter.mask[1][2] * getRedPixelComponent(0, j + 1) + filter.mask[2][1] * getRedPixelComponent(1, j) + filter.mask[2][2] * getRedPixelComponent(1, j + 1);
-            newColorRed = newColorRed / filter.sumL;
+        for (int j = 1; j < pngImage.getHeight() - 1; j++) {
+            newColorRed = filter.mask[0][1] * getRedPixelComponent(0, j-1, imageBefore) + filter.mask[0][2] * getRedPixelComponent( 1, j + 1, imageBefore) + filter.mask[1][1] * getRedPixelComponent(0, j, imageBefore) + filter.mask[1][2] * getRedPixelComponent(0, j + 1, imageBefore) + filter.mask[2][1] * getRedPixelComponent(1, j, imageBefore) + filter.mask[2][2] * getRedPixelComponent(1, j + 1, imageBefore);
+            newColorRed = newColorRed/filter.sums[1][0];
             newColorRed=checkColor(newColorRed);
 
-            newColorGreen = filter.mask[0][1] * getGreenPixelComponent(0, j-1) + filter.mask[0][2] * getGreenPixelComponent( 1, j + 1) + filter.mask[1][1] * getGreenPixelComponent(0, j) + filter.mask[1][2] * getGreenPixelComponent(0, j + 1) + filter.mask[2][1] * getGreenPixelComponent(1, j) + filter.mask[2][2] * getGreenPixelComponent(1, j + 1);
-            newColorGreen = newColorGreen / filter.sumL;
+            newColorGreen = filter.mask[0][1] * getGreenPixelComponent(0, j-1, imageBefore) + filter.mask[0][2] * getGreenPixelComponent( 1, j + 1, imageBefore) + filter.mask[1][1] * getGreenPixelComponent(0, j, imageBefore) + filter.mask[1][2] * getGreenPixelComponent(0, j + 1, imageBefore) + filter.mask[2][1] * getGreenPixelComponent(1, j, imageBefore) + filter.mask[2][2] * getGreenPixelComponent(1, j + 1, imageBefore);
+            newColorGreen = newColorGreen/filter.sums[1][0];
             newColorGreen=checkColor(newColorGreen);
 
-            newColorBlue = filter.mask[0][1] * getBluePixelComponent(0, j-1) + filter.mask[0][2] * getBluePixelComponent( 1, j + 1) + filter.mask[1][1] * getBluePixelComponent(0, j) + filter.mask[1][2] * getBluePixelComponent(0, j + 1) + filter.mask[2][1] * getBluePixelComponent(1, j) + filter.mask[2][2] * getBluePixelComponent(1, j + 1);
-            newColorBlue = newColorBlue / filter.sumL;
+            newColorBlue = filter.mask[0][1] * getBluePixelComponent(0, j-1, imageBefore) + filter.mask[0][2] * getBluePixelComponent( 1, j + 1, imageBefore) + filter.mask[1][1] * getBluePixelComponent(0, j, imageBefore) + filter.mask[1][2] * getBluePixelComponent(0, j + 1, imageBefore) + filter.mask[2][1] * getBluePixelComponent(1, j, imageBefore) + filter.mask[2][2] * getBluePixelComponent(1, j + 1, imageBefore);
+            newColorBlue = newColorBlue/filter.sums[1][0];
             newColorBlue=checkColor(newColorBlue);
 
             Color color = new Color(newColorRed, newColorGreen, newColorBlue);
             newColor = color.getRGB();
-            jpgImage.setRGB(0, j, newColor);
+            pngImage.setRGB(0, j, newColor);
         }
 
         //right
-        for (int j = 1; j < jpgImage.getHeight() - 1; j++) {
-            newColorRed = filter.mask[0][0] * getRedPixelComponent(jpgImage.getWidth()-2, j-1) + filter.mask[0][1] * getRedPixelComponent( jpgImage.getWidth()-1, j - 1) + filter.mask[1][0] * getRedPixelComponent(jpgImage.getWidth()-2, j) + filter.mask[1][1] * getRedPixelComponent(jpgImage.getWidth()-1, j) + filter.mask[2][0] * getRedPixelComponent(jpgImage.getWidth()-2, j+1) + filter.mask[2][1] * getRedPixelComponent(jpgImage.getWidth()-1, j + 1);
-            newColorRed = newColorRed / filter.sumL;
+        for (int j = 1; j < pngImage.getHeight() - 1; j++) {
+            newColorRed = filter.mask[0][0] * getRedPixelComponent(pngImage.getWidth()-2, j-1, imageBefore) + filter.mask[0][1] * getRedPixelComponent( pngImage.getWidth()-1, j - 1, imageBefore) + filter.mask[1][0] * getRedPixelComponent(pngImage.getWidth()-2, j, imageBefore) + filter.mask[1][1] * getRedPixelComponent(pngImage.getWidth()-1, j, imageBefore) + filter.mask[2][0] * getRedPixelComponent(pngImage.getWidth()-2, j+1, imageBefore) + filter.mask[2][1] * getRedPixelComponent(pngImage.getWidth()-1, j + 1, imageBefore);
+            newColorRed = newColorRed/filter.sums[1][2];
             newColorRed=checkColor(newColorRed);
 
-            newColorGreen = filter.mask[0][0] * getGreenPixelComponent(jpgImage.getWidth()-2, j-1) + filter.mask[0][1] * getGreenPixelComponent( jpgImage.getWidth()-1, j - 1) + filter.mask[1][0] * getGreenPixelComponent(jpgImage.getWidth()-2, j) + filter.mask[1][1] * getGreenPixelComponent(jpgImage.getWidth()-1, j) + filter.mask[2][0] * getGreenPixelComponent(jpgImage.getWidth()-2, j+1) + filter.mask[2][1] * getGreenPixelComponent(jpgImage.getWidth()-1, j + 1);
-            newColorGreen = newColorGreen / filter.sumL;
+            newColorGreen = filter.mask[0][0] * getGreenPixelComponent(pngImage.getWidth()-2, j-1, imageBefore) + filter.mask[0][1] * getGreenPixelComponent( pngImage.getWidth()-1, j - 1, imageBefore) + filter.mask[1][0] * getGreenPixelComponent(pngImage.getWidth()-2, j, imageBefore) + filter.mask[1][1] * getGreenPixelComponent(pngImage.getWidth()-1, j, imageBefore) + filter.mask[2][0] * getGreenPixelComponent(pngImage.getWidth()-2, j+1, imageBefore) + filter.mask[2][1] * getGreenPixelComponent(pngImage.getWidth()-1, j + 1, imageBefore);
+            newColorGreen = newColorGreen/filter.sums[1][2];
             newColorGreen=checkColor(newColorGreen);
 
-            newColorBlue = filter.mask[0][0] * getBluePixelComponent(jpgImage.getWidth()-2, j-1) + filter.mask[0][1] * getBluePixelComponent( jpgImage.getWidth()-1, j - 1) + filter.mask[1][0] * getBluePixelComponent(jpgImage.getWidth()-2, j) + filter.mask[1][1] * getBluePixelComponent(jpgImage.getWidth()-1, j) + filter.mask[2][0] * getBluePixelComponent(jpgImage.getWidth()-2, j+1) + filter.mask[2][1] * getBluePixelComponent(jpgImage.getWidth()-1, j + 1);
-            newColorBlue = newColorBlue / filter.sumL;
+            newColorBlue = filter.mask[0][0] * getBluePixelComponent(pngImage.getWidth()-2, j-1, imageBefore) + filter.mask[0][1] * getBluePixelComponent( pngImage.getWidth()-1, j - 1, imageBefore) + filter.mask[1][0] * getBluePixelComponent(pngImage.getWidth()-2, j, imageBefore) + filter.mask[1][1] * getBluePixelComponent(pngImage.getWidth()-1, j, imageBefore) + filter.mask[2][0] * getBluePixelComponent(pngImage.getWidth()-2, j+1, imageBefore) + filter.mask[2][1] * getBluePixelComponent(pngImage.getWidth()-1, j + 1, imageBefore);
+            newColorBlue = newColorBlue/filter.sums[1][2];
             newColorBlue=checkColor(newColorBlue);
 
             Color color = new Color(newColorRed, newColorGreen, newColorBlue);
             newColor = color.getRGB();
-            jpgImage.setRGB(jpgImage.getWidth()-1, j, newColor);
+            pngImage.setRGB(pngImage.getWidth()-1, j, newColor);
         }
 
         //down
-        for (int i = 1; i < jpgImage.getWidth() - 1; i++) {
-            newColorRed = filter.mask[0][0] * getRedPixelComponent(i-1, jpgImage.getHeight()-2) + filter.mask[0][1] * getRedPixelComponent( i, jpgImage.getHeight()-2) + filter.mask[0][2] * getRedPixelComponent(i+1, jpgImage.getHeight()-2) + filter.mask[1][0] * getRedPixelComponent(i-1, jpgImage.getHeight()-1) + filter.mask[1][1] * getRedPixelComponent(i, jpgImage.getHeight()-1) + filter.mask[1][2] * getRedPixelComponent(i+1, jpgImage.getHeight()-1);
-            newColorRed = newColorRed / filter.sumL;
+        for (int i = 1; i < pngImage.getWidth() - 1; i++) {
+            newColorRed = filter.mask[0][0] * getRedPixelComponent(i-1, pngImage.getHeight()-2, imageBefore) + filter.mask[0][1] * getRedPixelComponent( i, pngImage.getHeight()-2, imageBefore) + filter.mask[0][2] * getRedPixelComponent(i+1, pngImage.getHeight()-2, imageBefore) + filter.mask[1][0] * getRedPixelComponent(i-1, pngImage.getHeight()-1, imageBefore) + filter.mask[1][1] * getRedPixelComponent(i, pngImage.getHeight()-1, imageBefore) + filter.mask[1][2] * getRedPixelComponent(i+1, pngImage.getHeight()-1, imageBefore);
+            newColorRed = newColorRed/filter.sums[2][1];
             newColorRed=checkColor(newColorRed);
 
-            newColorGreen = filter.mask[0][0] * getGreenPixelComponent(i-1, jpgImage.getHeight()-2) + filter.mask[0][1] * getGreenPixelComponent( i, jpgImage.getHeight()-2) + filter.mask[0][2] * getGreenPixelComponent(i+1, jpgImage.getHeight()-2) + filter.mask[1][0] * getGreenPixelComponent(i-1, jpgImage.getHeight()-1) + filter.mask[1][1] * getGreenPixelComponent(i, jpgImage.getHeight()-1) + filter.mask[1][2] * getGreenPixelComponent(i+1, jpgImage.getHeight()-1);
-            newColorGreen = newColorGreen / filter.sumL;
+            newColorGreen = filter.mask[0][0] * getGreenPixelComponent(i-1, pngImage.getHeight()-2, imageBefore) + filter.mask[0][1] * getGreenPixelComponent( i, pngImage.getHeight()-2, imageBefore) + filter.mask[0][2] * getGreenPixelComponent(i+1, pngImage.getHeight()-2, imageBefore) + filter.mask[1][0] * getGreenPixelComponent(i-1, pngImage.getHeight()-1, imageBefore) + filter.mask[1][1] * getGreenPixelComponent(i, pngImage.getHeight()-1, imageBefore) + filter.mask[1][2] * getGreenPixelComponent(i+1, pngImage.getHeight()-1, imageBefore);
+            newColorGreen = newColorGreen/filter.sums[2][1];
             newColorGreen=checkColor(newColorGreen);
 
-            newColorBlue = filter.mask[0][0] * getBluePixelComponent(i-1, jpgImage.getHeight()-2) + filter.mask[0][1] * getBluePixelComponent( i, jpgImage.getHeight()-2) + filter.mask[0][2] * getBluePixelComponent(i+1, jpgImage.getHeight()-2) + filter.mask[1][0] * getBluePixelComponent(i-1, jpgImage.getHeight()-1) + filter.mask[1][1] * getBluePixelComponent(i, jpgImage.getHeight()-1) + filter.mask[1][2] * getBluePixelComponent(i+1, jpgImage.getHeight()-1);
-            newColorBlue = newColorBlue / filter.sumL;
+            newColorBlue = filter.mask[0][0] * getBluePixelComponent(i-1, pngImage.getHeight()-2, imageBefore) + filter.mask[0][1] * getBluePixelComponent( i, pngImage.getHeight()-2, imageBefore) + filter.mask[0][2] * getBluePixelComponent(i+1, pngImage.getHeight()-2, imageBefore) + filter.mask[1][0] * getBluePixelComponent(i-1, pngImage.getHeight()-1, imageBefore) + filter.mask[1][1] * getBluePixelComponent(i, pngImage.getHeight()-1, imageBefore) + filter.mask[1][2] * getBluePixelComponent(i+1, pngImage.getHeight()-1, imageBefore);
+            newColorBlue = newColorBlue/filter.sums[2][1];
             newColorBlue=checkColor(newColorBlue);
 
             Color color = new Color(newColorRed, newColorGreen, newColorBlue);
             newColor = color.getRGB();
-            jpgImage.setRGB(i, jpgImage.getHeight()-1, newColor);
+            pngImage.setRGB(i, pngImage.getHeight()-1, newColor);
         }
+    }
+
+    void savePngImage(String fileName) throws IOException {
+        File file = new File("after.png");
+        ImageIO.write(this.getPngImage(), "png", file);
     }
 
 }

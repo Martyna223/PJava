@@ -1,165 +1,120 @@
-public class Filter {
+import java.util.ArrayList;
 
-    public Filter()  {
+public class Filter {
+    int[][] mask = new int[3][3];
+    int[][] sums = new int[3][3];
+
+    public Filter() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                mask[i][j] = 0;
+                this.mask[i][j] = 0;
             }
         }
-        mask[1][1] = 1;
-        setSum();
+        this.mask[1][1] = 1;
+        setSums();
     }
 
-    public Filter(int a0, int a1, int a2, int b0, int b1, int b2, int c0, int c1, int c2) {
-       setFilter(a0, a1, a2, b0, b1, b2, c0, c1, c2);
+    public Filter(int[][] mask) {
+        setFilter(mask);
     }
 
-    public void setFilter(Filter newfilter) {
-        this.mask= newfilter.mask;
-        setSum();
+    public MyImage filterImage(MyImage image) {
+        return image;
     }
 
-    public void setFilter(int a0, int a1, int a2, int b0, int b1, int b2, int c0, int c1, int c2) {
-        mask[0][0] = a0;
-        mask[0][1] = a1;
-        mask[0][2] = a2;
-
-        mask[1][0] = b0;
-        mask[1][1] = b1;
-        mask[1][2] = b2;
-
-        mask[2][0] = c0;
-        mask[2][1] = c1;
-        mask[2][2] = c2;
-
-        setSum();
-    }
-
-
-    public void standardLowPassFilter() {
-        setFilter(1, 1, 1, 1, 1, 1, 1, 1, 1);
-    }
-
-    public void standardHighPassFilter() {
-        setFilter(-1, -1, -1, -1, 14, -1, -1, -1,-1);
-    }
-
-   // public void HPFilter(){ setFilter(-1, -1, -1, -1, 14, -1, -1, -1,-1);}
-
-
-    public int[][] getMask(){
+    public int[][] getMask() {
         return mask;
     }
 
-    public void setSum() {
-        sum=0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                sum = sum + mask[i][j];
+    public void setFilter(int[][] mask) {
+        this.mask = mask;
+        setSums();
+    }
+
+    public int makeSum(int start_row, int end_row, int start_column, int end_column) {
+        int sum = 0;
+        for (int i = start_row; i <= end_row; i++) {
+            for (int j = start_column; j <= end_column; j++) {
+                sum += this.mask[i][j];
             }
         }
+        return sum;
+    }
+
+    public int correctSum(int sum) {
         if (sum < 1) {
-            sum = 1;
+            return 1;
         }
+        return sum;
+    }
+
+    public void setSums() {
+        setCenterSum();
         setLeftUpSum();
         setRightUpSum();
         setLeftDownSum();
+        setDownSum();
         setRightDownSum();
         setUpSum();
         setLeftSum();
         setRightSum();
-        setDownSum();
+
+    }
+
+    public void setCenterSum() {
+        this.sums[1][1] = this.makeSum(0, 2, 0, 2);
+        this.sums[1][1] = this.correctSum(this.sums[1][1]);
     }
 
     public void setRightUpSum() {
-        sumRU=0;
-        sumRU= mask[0][2]+mask[0][1]+mask[1][2]+mask[1][1];
-        if (sumRU < 1) {
-            sumRU = 1;
-        }
+        this.sums[0][2] = this.makeSum(0, 1, 1, 2);
+        this.sums[0][2] = this.correctSum(this.sums[0][2]);
     }
 
     public void setLeftUpSum() {
-        sumLU=0;
-        sumLU= mask[0][0]+mask[0][1]+mask[1][0]+mask[1][1];
-        if (sumLU < 1) {
-            sumLU = 1;
-        }
+        this.sums[0][0] = this.makeSum(0, 1, 0, 1);
+        this.sums[0][0] = this.correctSum(this.sums[0][0]);
     }
 
+
     public void setRightDownSum() {
-        sumRD=0;
-        sumRD= mask[2][2]+mask[2][1]+mask[1][1]+mask[1][2];
-        if (sumRD < 1) {
-            sumRD = 1;
-        }
+        this.sums[2][2] = this.makeSum(1, 2, 1, 2);
+        this.sums[2][2] = this.correctSum(this.sums[2][2]);
     }
 
     public void setLeftDownSum() {
-        sumLD=0;
-        sumLD= mask[2][0]+mask[1][0]+mask[2][1]+mask[1][1];
-        if (sumLD < 1) {
-            sumLD = 1;
-        }
+        this.sums[2][0] = this.makeSum(1, 2, 0, 1);
+        this.sums[2][0] = this.correctSum(this.sums[2][0]);
     }
 
     public void setUpSum() {
-        sumU=0;
-        for (int i = 1; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                sumU = sumU + mask[i][j];
-            }
-        }
-        if (sumU < 1) {
-            sumU = 1;
-        }
+        this.sums[0][1] = this.makeSum(1, 2, 0, 2);
+        this.sums[0][1] = this.correctSum(this.sums[0][1]);
     }
 
+
     public void setLeftSum() {
-        sumL=0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 1; j < 3; j++) {
-                sumL = sumL + mask[i][j];
-            }
-        }
-        if (sumL < 1) {
-            sumL = 1;
-        }
+        this.sums[1][0] = this.makeSum(0, 2, 1, 2);
+        this.sums[1][0] = this.correctSum(this.sums[0][1]);
     }
 
     public void setRightSum() {
-        sumR=0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 2; j++) {
-                sumR = sumR + mask[i][j];
-            }
-        }
-        if (sumR < 1) {
-            sumR = 1;
-        }
+        this.sums[1][2] = this.makeSum(0, 2, 0, 1);
+        this.sums[1][2] = this.correctSum(this.sums[1][2]);
     }
 
     public void setDownSum() {
-        sumD=0;
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 3; j++) {
-                sumD = sumD + mask[i][j];
-            }
-        }
-        if (sumD < 1) {
-            sumD = 1;
-        }
+        this.sums[2][1] = this.makeSum(0, 1, 0, 2);
+        this.sums[2][1] = this.correctSum(this.sums[2][1]);
     }
 
-    int sum=0;
-    int sumRU=0;
-    int sumLU=0;
-    int sumRD=0;
-    int sumLD=0;
-    int sumU=0;
-    int sumL=0;
-    int sumR=0;
-    int sumD=0;
-    int mask[][] = new int[3][3];
+    public void standardHighPassFilter() {
+        int[][] maskHP = {{-1, -1, -1}, {-1, 14, -1}, {-1, -1, -1}};
+        setFilter(maskHP);
+    }
 
+    public void standardLowPassFilter() {
+        int[][] maskLP = {{1, 1, 1}, {1, 1, 1}, {1, 1, 1}};
+        setFilter(maskLP);
+    }
 }

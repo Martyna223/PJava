@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 
 public class MyFrame1 extends JFrame implements ActionListener{
@@ -25,17 +26,17 @@ public class MyFrame1 extends JFrame implements ActionListener{
     JTextField textField7;
     JTextField textField8;
 
-    MyFrame1(){
+    MyFrame1() throws IOException {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
         this.setSize(1200,700);
         this.setVisible(true);
 
         picBefore= new MyImage("image-00000.dcm");
-        ImageIcon image1 = new ImageIcon(picBefore.getJpgImage());
+        ImageIcon image1 = new ImageIcon(picBefore.getPngImage());
 
         picAfter= new MyImage("image-00000.dcm");
-        ImageIcon image2 = new ImageIcon(picAfter.getJpgImage());
+        ImageIcon image2 = new ImageIcon(picAfter.getPngImage());
         filter= new Filter();
 
         button1= new JButton();
@@ -81,39 +82,39 @@ public class MyFrame1 extends JFrame implements ActionListener{
         button3.setFocusable(false);
 
         textField0= new JTextField();
-        textField0.setText("0");
+        textField0.setText("-1");
         textField0.setBounds(650,550,30,30);
 
         textField1= new JTextField();
-        textField1.setText("1");
+        textField1.setText("-1");
         textField1.setBounds(685,550,30,30);
 
         textField2= new JTextField();
-        textField2.setText("2");
+        textField2.setText("0");
         textField2.setBounds(720,550,30,30);
 
         textField3= new JTextField();
-        textField3.setText("3");
+        textField3.setText("-1");
         textField3.setBounds(650,583,30,30);
 
         textField4= new JTextField();
-        textField4.setText("4");
+        textField4.setText("0");
         textField4.setBounds(685,583,30,30);
 
         textField5= new JTextField();
-        textField5.setText("5");
+        textField5.setText("1");
         textField5.setBounds(720,583,30,30);
 
         textField6= new JTextField();
-        textField6.setText("6");
+        textField6.setText("0");
         textField6.setBounds(650,615,30,30);
 
         textField7= new JTextField();
-        textField7.setText("7");
+        textField7.setText("1");
         textField7.setBounds(685,615,30,30);
 
         textField8= new JTextField();
-        textField8.setText("8");
+        textField8.setText("1");
         textField8.setBounds(720,615,30,30);
 
 
@@ -133,31 +134,52 @@ public class MyFrame1 extends JFrame implements ActionListener{
         this.add(textField8);
         this.add(button3);
 
+        //write to file
+        File file = new File("before.png");
+        ImageIO.write(picBefore.getPngImage(), "png", file);
+
     }
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==button1){
             filter.standardLowPassFilter();
             panel2.setVisible(false);
             picAfter.addFilter(filter);
+            try {
+                picAfter.savePngImage("afterFiltration.png");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
             panel2.setVisible(true);
         } else if(e.getSource()==button2) {
             filter.standardHighPassFilter();
             panel2.setVisible(false);
             picAfter.addFilter(filter);
+
+            try {
+                picAfter.savePngImage("afterFiltration.png");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
             panel2.setVisible(true);
         } else if(e.getSource()==button3) {
-            int a0 = Integer.valueOf(textField0.getText());
-            int a1 = Integer.valueOf(textField1.getText());
-            int a2 = Integer.valueOf(textField2.getText());
-            int a3 = Integer.valueOf(textField3.getText());
-            int a4 = Integer.valueOf(textField4.getText());
-            int a5 = Integer.valueOf(textField5.getText());
-            int a6 = Integer.valueOf(textField6.getText());
-            int a7 = Integer.valueOf(textField7.getText());
-            int a8 = Integer.valueOf(textField8.getText());
-            filter.setFilter(a0, a1, a2, a3, a4, a5, a6, a7, a8);
+            int mask[][]={{0,0,0},{0,1,0},{0,0,0}};
+            mask[0][0] = Integer.valueOf(textField0.getText());
+            mask[0][1] = Integer.valueOf(textField1.getText());
+            mask[0][2] = Integer.valueOf(textField2.getText());
+            mask[1][0] = Integer.valueOf(textField3.getText());
+            mask[1][1] = Integer.valueOf(textField4.getText());
+            mask[1][2] = Integer.valueOf(textField5.getText());
+            mask[2][0] = Integer.valueOf(textField6.getText());
+            mask[2][1] = Integer.valueOf(textField7.getText());
+            mask[2][2] = Integer.valueOf(textField8.getText());
+            filter.setFilter(mask);
             panel2.setVisible(false);
             picAfter.addFilter(filter);
+            try {
+                picAfter.savePngImage("afterFiltration.png");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
             panel2.setVisible(true);
         }
 
