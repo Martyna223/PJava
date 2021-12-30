@@ -16,6 +16,7 @@ public class MyFrame1 extends JFrame implements ActionListener{
     MyImage picBefore;
     JPanel panel2;
     JButton button3;
+    JButton button4;
     JTextField textField0;
     JTextField textField1;
     JTextField textField2;
@@ -25,6 +26,8 @@ public class MyFrame1 extends JFrame implements ActionListener{
     JTextField textField6;
     JTextField textField7;
     JTextField textField8;
+    JLabel label1;
+    JLabel label2;
 
     MyFrame1() throws IOException {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,14 +54,14 @@ public class MyFrame1 extends JFrame implements ActionListener{
         button2.setText("Set the high pass filter");
         button2.setFocusable(false);
 
-        JLabel label1= new JLabel();
+        label1= new JLabel();
         label1.setText("Before Filtration");
         label1.setIcon(image1);
         label1.setVerticalTextPosition(JLabel.TOP);
         label1.setHorizontalTextPosition(JLabel.CENTER);
         label1.setBounds(0,0,600, 550);
 
-        JLabel label2 = new JLabel();
+        label2 = new JLabel();
         label2.setText("After Filtration");
         label2.setIcon(image2);
         label2.setVerticalTextPosition(JLabel.TOP);
@@ -123,6 +126,13 @@ public class MyFrame1 extends JFrame implements ActionListener{
         this.add(button1);
         this.add(button2);
 
+        button4= new JButton();
+        button4.addActionListener(this);
+        button4.setBounds(775,575,165,50);
+        button4.setText("Set the Gabor filter");
+        button4.setFocusable(false);
+
+
         this.add(textField0);
         this.add(textField1);
         this.add(textField2);
@@ -133,14 +143,17 @@ public class MyFrame1 extends JFrame implements ActionListener{
         this.add(textField7);
         this.add(textField8);
         this.add(button3);
+        this.add(button4);
+
 
         //write to file
-        File file = new File("before.png");
+        File file = new File("beforeFiltration.png");
         ImageIO.write(picBefore.getPngImage(), "png", file);
 
     }
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==button1){
+
             filter.standardLowPassFilter();
             panel2.setVisible(false);
             picAfter.addFilter(filter);
@@ -180,6 +193,27 @@ public class MyFrame1 extends JFrame implements ActionListener{
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+            panel2.setVisible(true);
+
+        } else if(e.getSource()==button4) {
+            panel2.setVisible(false);
+            BufferedImage bufferedImage = new BufferedImage(picAfter.getPngImage().getWidth(null), picAfter.getPngImage().getHeight(null), BufferedImage.TYPE_INT_RGB);
+            Graphics g = bufferedImage.getGraphics();
+            g.drawImage(picAfter.getPngImage(), 0, 0, null);
+
+            GaborFilter gaborImage= new GaborFilter(16, new double[] {0, Math.PI/4, Math.PI}, 0, 0.5, 1, 3, 3);
+            bufferedImage= (BufferedImage) gaborImage.filter(bufferedImage, null);
+            picAfter.setPngImage(bufferedImage);
+
+            ImageIcon imageIcon= new ImageIcon(picAfter.getPngImage());
+            label2.setIcon(imageIcon);
+
+            try {
+                picAfter.savePngImage("afterFiltration.png");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
             panel2.setVisible(true);
         }
 

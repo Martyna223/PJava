@@ -25,7 +25,14 @@ public class MyImage {
         }
     }
 
-    public void setPngImage(String fileName){
+    public void setPngImage(String fileName) throws IOException {
+      /*  try {
+            pngImage = ImageIO.read(new File(fileName));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        */
+
         String dicomInputFile = fileName;
         try {
             SourceImage sImg = new SourceImage(dicomInputFile);
@@ -36,6 +43,18 @@ public class MyImage {
             e.printStackTrace();
         }
     }
+/*
+    public void setPngImage(BufferedImage image) throws IOException {
+
+        try {
+           pngImage = this.copyImage(image);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+ */
 
     public void setPngImage(BufferedImage image){
         pngImage =image;
@@ -127,6 +146,79 @@ public class MyImage {
                 pngImage.setRGB(i, j, newColor);
             }
         }
+        filterInCorners(filter);
+        filterOnEdge(filter);
+    }
+
+    public void addFilterNormalization(Filter filter){
+        BufferedImage imageBefore= this.copyImage(pngImage);
+        int[][] newColorRed= new int[pngImage.getWidth()][pngImage.getHeight()];
+        int[][] newColorGreen= new int[pngImage.getWidth()][pngImage.getHeight()];
+        int[][] newColorBlue= new int[pngImage.getWidth()][pngImage.getHeight()];
+        int newColor;
+        int redMax=0;
+        int redMin=255;
+        int greenMax=0;
+        int greenMin=255;
+        int blueMax=0;
+        int blueMin=255;
+
+        for (int j = 1; j < pngImage.getHeight() - 1; j++) {
+            for (int i = 1; i < pngImage.getWidth() - 1; i++) {
+
+                newColorRed[i][j] = filter.mask[0][0] * getRedPixelComponent(i - 1, j - 1, imageBefore) + filter.mask[0][1] * getRedPixelComponent(i - 1, j, imageBefore) + filter.mask[0][2] * getRedPixelComponent(i - 1, j + 1, imageBefore) + filter.mask[1][0] * getRedPixelComponent(i, j - 1, imageBefore) + filter.mask[1][1] * getRedPixelComponent(i, j, imageBefore) + filter.mask[1][2] * getRedPixelComponent(i, j + 1, imageBefore) + filter.mask[2][0] * getRedPixelComponent(i + 1, j - 1, imageBefore) + filter.mask[2][1] * getRedPixelComponent(i + 1, j, imageBefore) + filter.mask[2][2] * getRedPixelComponent(i + 1, j + 1, imageBefore);
+                newColorRed[i][j] = newColorRed[i][j]/filter.sums[1][1];
+                //newColorRed[i][j]=checkColor(newColorRed[i][j]);
+                if(newColorRed[i][j]>redMax){
+                    redMax= newColorRed[i][j];
+                    //redMax= checkColor(redMax);
+                }
+                if(newColorRed[i][j]<redMin){
+                    redMin= newColorRed[i][j];
+                    //redMin= checkColor(redMin);
+                }
+
+                newColorGreen[i][j] = filter.mask[0][0] * getGreenPixelComponent(i - 1, j - 1, imageBefore) + filter.mask[0][1] * getGreenPixelComponent(i - 1, j, imageBefore) + filter.mask[0][2] * getGreenPixelComponent(i - 1, j + 1, imageBefore) + filter.mask[1][0] * getGreenPixelComponent(i, j - 1, imageBefore) + filter.mask[1][1] * getGreenPixelComponent(i, j, imageBefore) + filter.mask[1][2] * getGreenPixelComponent(i, j + 1, imageBefore) + filter.mask[2][0] * getGreenPixelComponent(i + 1, j - 1, imageBefore) + filter.mask[2][1] * getGreenPixelComponent(i + 1, j, imageBefore) + filter.mask[2][2] * getGreenPixelComponent(i + 1, j + 1, imageBefore);
+                newColorGreen[i][j] = newColorGreen[i][j]/filter.sums[1][1];
+                //newColorGreen[i][j]=checkColor(newColorGreen[i][j]);
+                if(newColorGreen[i][j]>greenMax){
+                    greenMax= newColorGreen[i][j];
+                   // greenMax= checkColor(greenMax);
+                }
+                if(newColorGreen[i][j]<greenMin){
+                    greenMin= newColorRed[i][j];
+                   // greenMin= checkColor(greenMin);
+                }
+
+                newColorBlue[i][j] = filter.mask[0][0] * getBluePixelComponent(i - 1, j - 1, imageBefore) + filter.mask[0][1] * getBluePixelComponent(i - 1, j,imageBefore) + filter.mask[0][2] * getBluePixelComponent(i - 1, j + 1, imageBefore) + filter.mask[1][0] * getBluePixelComponent(i, j - 1, imageBefore) + filter.mask[1][1] * getBluePixelComponent(i, j, imageBefore) + filter.mask[1][2] * getBluePixelComponent(i, j + 1, imageBefore) + filter.mask[2][0] * getBluePixelComponent(i + 1, j - 1, imageBefore) + filter.mask[2][1] * getBluePixelComponent(i + 1, j, imageBefore) + filter.mask[2][2] * getBluePixelComponent(i + 1, j + 1, imageBefore);
+                newColorBlue[i][j] = newColorBlue[i][j]/filter.sums[1][1];
+                //newColorBlue[i][j]= checkColor(newColorBlue[i][j]);
+                if(newColorBlue[i][j]>blueMax){
+                    blueMax= newColorBlue[i][j];
+                    //blueMax= checkColor(blueMax);
+                }
+                if(newColorBlue[i][j]<blueMin){
+                    blueMin= newColorBlue[i][j];
+                   // blueMin= checkColor(blueMin);
+                }
+
+            }
+        }
+        System.out.println("Red Max: "+ redMax + ", Red Min: " + redMin);
+            for (int j = 1; j < pngImage.getHeight() - 1; j++) {
+                for (int i = 1; i < pngImage.getWidth() - 1; i++) {
+                    newColorRed[i][j]= (newColorRed[i][j]-redMin)/(redMax-redMin);
+                    newColorRed[i][j]=checkColor(newColorRed[i][j]);
+                    newColorGreen[i][j]= (newColorGreen[i][j]-greenMin)/(greenMax-greenMin);
+                    newColorGreen[i][j]=checkColor(newColorGreen[i][j]);
+                    newColorBlue[i][j]= (newColorBlue[i][j]-blueMin)/(blueMax-blueMin);
+                    newColorBlue[i][j]= checkColor(newColorBlue[i][j]);
+
+                    Color color = new Color(newColorRed[i][j], newColorGreen[i][j], newColorBlue[i][j]);
+                    newColor = color.getRGB();
+                    pngImage.setRGB(i, j, newColor);
+                }
+            }
 
         filterInCorners(filter);
         filterOnEdge(filter);
@@ -293,7 +385,7 @@ public class MyImage {
     }
 
     void savePngImage(String fileName) throws IOException {
-        File file = new File("after.png");
+        File file = new File(fileName);
         ImageIO.write(this.getPngImage(), "png", file);
     }
 
