@@ -108,6 +108,8 @@ public class Filter {
         this.sums[2][1] = this.correctSum(this.sums[2][1]);
     }
 
+    //Setting filters with different parameters
+
     public void standardHighPassFilter() {
         int[][] maskHP = {{-1, -1, -1}, {-1, 14, -1}, {-1, -1, -1}};
         setFilter(maskHP);
@@ -117,4 +119,55 @@ public class Filter {
         int[][] maskLP = {{1, 1, 1}, {1, 1, 1}, {1, 1, 1}};
         setFilter(maskLP);
     }
+
+    public void gaussFilter() {
+        int[][] gaussMask = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
+        setFilter(gaussMask);
+    }
+
+    public void horizontalFilter() {
+        int[][] horizontalMask = {{0, 0, 0}, {-1, 1, 0}, {0, 0, 0}};
+        setFilter(horizontalMask);
+    }
+
+    public void verticalFilter() {
+        int[][] verticalMask = {{0, -1, 0}, {0, 1, 0}, {0, 0, 0}};
+        setFilter(verticalMask);
+    }
+
+    public void diagonalFilter() {
+        int[][] diagonalMask = {{-1, 0, 0}, {0, 1, 0}, {0, 0, 0}};
+        setFilter(diagonalMask);
+    }
+
+    public void laplaceFilter() {
+        int[][] laplaceMask = {{0, -1, 0}, {-1, 4, -1}, {0, -1, 0}};
+        setFilter(laplaceMask);
+    }
+
+    public void sobelHorizontalFilter() {
+        int[][] sobelMask = {{1, 2, 1}, {0, 0, 0}, {-1, -2, -1}};
+        setFilter(sobelMask);
+    }
+
+    public void sobelVerticalFilter() {
+        int[][] sobelMask = {{1, 0, -1}, {2, 0, -2}, {1, 0, -1}};
+        setFilter(sobelMask);
+    }
+
+    public void prewitteHorizontalFilter() {
+        int[][] prewitteMask = {{-1, -1, -1}, {0, 0, 0}, {1, 1, 1}};
+        setFilter(prewitteMask);
+    }
+
+    public void prewitteVerticalFilter() {
+        int[][] prewitte = {{1, 0, -1}, {1, 0, -1}, {1, 0, -1}};
+        setFilter(prewitte);
+    }
+
+    public void noEffectFilter() {
+        int[][] doingNothing = {{0, 0, 0}, {0, 1, 0}, {0, 0, 0}};
+        setFilter(doingNothing);
+    }
+
 }
