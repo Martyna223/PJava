@@ -12,7 +12,7 @@ public class Main {
             @Override
             public void run() {
                 try {
-                    new MyFrame1();
+                    new MyFrame3();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

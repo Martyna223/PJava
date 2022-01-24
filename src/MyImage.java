@@ -11,53 +11,30 @@ import java.io.IOException;
 
 public class MyImage {
 
-    public static BufferedImage pngImage;
+    public BufferedImage pngImage;
+
 
     public MyImage(String fileName) {
         String dicomInputFile = fileName;
+        System.out.println(dicomInputFile);
         try {
             SourceImage sImg = new SourceImage(dicomInputFile);
             OverriddenSingleImagePanelForDemo singleImagePanel = new OverriddenSingleImagePanelForDemo(sImg);
-            pngImage = sImg.getBufferedImage();
+            this.pngImage = sImg.getBufferedImage();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
-    public void setPngImage(String fileName) throws IOException {
-      /*  try {
-            pngImage = ImageIO.read(new File(fileName));
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        */
-
-        String dicomInputFile = fileName;
-        try {
-            SourceImage sImg = new SourceImage(dicomInputFile);
-            OverriddenSingleImagePanelForDemo singleImagePanel = new OverriddenSingleImagePanelForDemo(sImg);
-            pngImage = sImg.getBufferedImage();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-/*
-    public void setPngImage(BufferedImage image) throws IOException {
-
-        try {
-           pngImage = this.copyImage(image);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public MyImage(BufferedImage img){
+        this.pngImage=img;
     }
 
- */
 
     public void setPngImage(BufferedImage image){
-        pngImage =image;
+        this.pngImage =image;
     }
 
     public int getWidth(){
@@ -69,7 +46,7 @@ public class MyImage {
     }
 
     public BufferedImage getPngImage(){
-        return pngImage;
+        return this.pngImage;
     }
 
     public void getPixelColor(int x, int y, BufferedImage image){
@@ -384,8 +361,8 @@ public class MyImage {
         }
     }
 
-    void savePngImage(String fileName) throws IOException {
-        File file = new File(fileName);
+    void savePngImage(File file) throws IOException {
+        //File file = new File(fileName);
         ImageIO.write(this.getPngImage(), "png", file);
     }
 
