@@ -1,3 +1,4 @@
+import com.formdev.flatlaf.FlatDarculaLaf;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -12,6 +13,7 @@ public class Main {
             @Override
             public void run() {
                 try {
+                    FlatDarculaLaf.setup();
                     new MyFrame3();
                 } catch (IOException e) {
                     e.printStackTrace();
