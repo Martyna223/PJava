@@ -243,29 +243,15 @@ public class MyFrame3 extends JFrame implements ActionListener {
             picAfter= picBefore;
             imagesAfter.myImages.set(i, picAfter);
             upDate();
-/*
-            try {
-                picAfter.savePngImage("afterFiltration.png");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
- */
             panel2.setVisible(true);
 
         } else if (e.getSource() == button2) {
             panel2.setVisible(false);
-            upDate();
             picAfter.addFilter(filter);
-/*
-            try {
-                picAfter.savePngImage("afterFiltration.png");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
- */
+            imagesAfter.myImages.set(i, picAfter);
+            upDate();
             panel2.setVisible(true);
+
         } else if (e.getSource() == button3) {
             int mask[][] = {{0, 0, 0}, {0, 1, 0}, {0, 0, 0}};
             mask[0][0] = Integer.valueOf(textField0.getText());
@@ -280,15 +266,7 @@ public class MyFrame3 extends JFrame implements ActionListener {
             filter.setFilter(mask);
             panel2.setVisible(false);
             picAfter.addFilter(filter);
-            label2.setIcon(image2);
-            /*
-            try {
-                picAfter.savePngImage("afterFiltration.png");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-             */
+            imagesAfter.myImages.set(i, picAfter);
             panel2.setVisible(true);
 
         } else if (e.getSource() == button4) {
@@ -303,14 +281,6 @@ public class MyFrame3 extends JFrame implements ActionListener {
 
             image2 = new ImageIcon(picAfter.getPngImage());
             label2.setIcon(image2);
-/*
-            try {
-                picAfter.savePngImage("afterFiltration.png");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
- */
             panel2.setVisible(true);
 
         } else if (e.getSource() == selectFileButton) {
@@ -357,7 +327,6 @@ public class MyFrame3 extends JFrame implements ActionListener {
                 i = i + 1;
             }
             upDate();
-            System.out.println("i "+i);
 
         }
     }
