@@ -242,8 +242,9 @@ public class MyFrame3 extends JFrame implements ActionListener {
             }
         } else if (e.getSource() == button1) {
             panel2.setVisible(false);
-            picAfter= picBefore;
-            imagesAfter.myImages.set(i, picAfter);
+            picAfter.copy(imagesBefore.myImages.get(i));
+
+            //imagesAfter.myImages.set(i, picBefore);
             upDate();
             panel2.setVisible(true);
 

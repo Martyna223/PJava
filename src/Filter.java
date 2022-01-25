@@ -42,8 +42,11 @@ public class Filter {
     }
 
     public int correctSum(int sum) {
-        if (sum < 1) {
+        if (sum==0){
             return 1;
+        }
+        if (sum < 1) {
+            sum= -sum;
         }
         return sum;
     }
@@ -58,7 +61,6 @@ public class Filter {
         setUpSum();
         setLeftSum();
         setRightSum();
-
     }
 
     public void setCenterSum() {
