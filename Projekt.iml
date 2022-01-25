@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="pixelmed" level="project" />
+    <orderEntry type="library" name="flatlaf-2.0" level="project" />
   </component>
 </module>
