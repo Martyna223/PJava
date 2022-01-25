@@ -186,6 +186,27 @@ public class MyFrame3 extends JFrame implements ActionListener {
         this.add(buttonR);
         this.add(saveButton);
 
+        this.changeState(false);
+    }
+
+    public void changeState(boolean state){
+        this.button1.setEnabled(state);
+        this.button2.setEnabled(state);
+        this.button3.setEnabled(state);
+        this.button4.setEnabled(state);
+        this.buttonL.setEnabled(state);
+        this.buttonR.setEnabled(state);
+        this.saveButton.setEnabled(state);
+        this.selectBox.setEnabled(state);
+        this.textField0.setEnabled(state);
+        this.textField1.setEnabled(state);
+        this.textField2.setEnabled(state);
+        this.textField3.setEnabled(state);
+        this.textField4.setEnabled(state);
+        this.textField5.setEnabled(state);
+        this.textField6.setEnabled(state);
+        this.textField7.setEnabled(state);
+        this.textField8.setEnabled(state);
     }
     public void upDate(){
         panel2.setVisible(false);
@@ -292,6 +313,7 @@ public class MyFrame3 extends JFrame implements ActionListener {
             int response = fileChooser.showOpenDialog(null);
             if (response == JFileChooser.APPROVE_OPTION) {
                 panel2.setVisible(false);
+                this.changeState(true);
                 file = new File(fileChooser.getSelectedFile().getAbsolutePath());
 
                 imagesBefore = new Image3D(file.getParent());
