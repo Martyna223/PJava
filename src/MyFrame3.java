@@ -80,13 +80,13 @@ public class MyFrame3 extends JFrame implements ActionListener {
 
         buttonL= new JButton("⬆");
         buttonL.addActionListener(this);
-        buttonL.setBounds(1150, 400,50,50);
+        buttonL.setBounds(1210, 400,50,50);
         buttonL.setFocusable(false);
         buttonL.setFont(new Font("Dialog", Font.PLAIN, 32));
 
         buttonR= new JButton("⬇");
         buttonR.addActionListener(this);
-        buttonR.setBounds(1150, 460,50,50);
+        buttonR.setBounds(1210, 460,50,50);
         buttonR.setFocusable(false);
         buttonR.setFont(new Font("Dialog", Font.PLAIN, 32));
 

@@ -14,7 +14,9 @@ public class Main {
             public void run() {
                 try {
                     FlatDarculaLaf.setup();
-                    new MyFrame3();
+                    MyFrame3 frame = new MyFrame3();
+                    frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    frame.setVisible(true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
