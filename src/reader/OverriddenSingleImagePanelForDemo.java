@@ -10,7 +10,7 @@ import com.pixelmed.event.ApplicationEventDispatcher;
 import com.pixelmed.event.EventContext;
 
 /**
- * Obsluguje przelaczanie serii zdjęc
+ * Obsluguje przelaczanie serii zdjec
  */
 public class OverriddenSingleImagePanelForDemo extends SingleImagePanel {
 
@@ -22,7 +22,7 @@ public class OverriddenSingleImagePanelForDemo extends SingleImagePanel {
     /**
      * Ustawia liczbe klatek
      *
-     * @param sImg obraz zródłowy
+     * @param sImg obraz zrodlowy
      */
     public OverriddenSingleImagePanelForDemo(SourceImage sImg) {
         super(sImg);
