@@ -1,6 +1,5 @@
 import com.pixelmed.display.SourceImage;
 import reader.OverriddenSingleImagePanelForDemo;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -9,11 +8,19 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Przechowuje parametry obrazów
+ * @param pngImage przetwarzane zdjęcie
+ */
 public class MyImage {
 
     public BufferedImage pngImage;
 
-
+    /**
+     * Podstawowy konstruktor
+     *
+     * @param fileName nazwa pliku
+     */
     public MyImage(String fileName) {
         String dicomInputFile = fileName;
         System.out.println(dicomInputFile);
@@ -27,29 +34,58 @@ public class MyImage {
         }
     }
 
-
-
+    /**
+     * Ustawia obraz
+     *
+     * @param img źródłowy obraz
+     */
     public MyImage(BufferedImage img){
         this.pngImage=img;
     }
 
-
+    /**
+     * Ustawia obraz w formacie png
+     *
+     * @param image źródłowy obraz
+     */
     public void setPngImage(BufferedImage image){
         this.pngImage =image;
     }
 
+    /**
+     * Pobiera szerokość obrazu
+     *
+     * @return szerokość obrazu
+     */
     public int getWidth(){
         return pngImage.getWidth();
     }
 
+    /**
+     * Pobiera wysokość obrazu
+     *
+     * @return wysokość obrazu
+     */
     public int getHeight(){
         return pngImage.getHeight();
     }
 
+    /**
+     * Pobiera obraz w formacie png
+     *
+     * @return obraz w formacie png
+     */
     public BufferedImage getPngImage(){
         return this.pngImage;
     }
 
+    /**
+     * Pobiera kolor piksela
+     *
+     * @param x współrzędna X piksela
+     * @param y współrzędna Y piksela
+     * @param image obraz, z którego pobierany jest kolor
+     */
     public void getPixelColor(int x, int y, BufferedImage image){
         int clr = image.getRGB(x, y);
         int red =   (clr & 0x00ff0000) >> 16;
@@ -60,6 +96,14 @@ public class MyImage {
         System.out.println("Blue Color value = " + blue);
     }
 
+    /**
+     * Pobiera składową czerwoną piksela
+     *
+     * @param x współrzędna X piksela
+     * @param y współrzędna Y piksela
+     * @param image obraz, z którego pobierany jest kolor
+     * @return składowa czerwona
+     */
     public int getRedPixelComponent(int x, int y, BufferedImage image){
         int clr = image.getRGB(x, y);
         int red =   (clr & 0x00ff0000) >> 16;
@@ -67,18 +111,40 @@ public class MyImage {
     }
 
 
+    /**
+     * Pobiera składową zieloną piksela
+     *
+     * @param x współrzędna X piksela
+     * @param y współrzędna Y piksela
+     * @param image obraz, z którego pobierany jest kolor
+     * @return składowa zielona
+     */
     public int getGreenPixelComponent(int x, int y, BufferedImage image){
         int clr = image.getRGB(x, y);
         int green = (clr & 0x0000ff00) >> 8;
         return green;
     }
 
+    /**
+     * Pobiera składową niebieską piksela
+     *
+     * @param x współrzędna X piksela
+     * @param y współrzędna Y piksela
+     * @param image obraz, z którego pobierany jest kolor
+     * @return składowa niebieska
+     */
     public int getBluePixelComponent(int x, int y, BufferedImage image){
         int clr = image.getRGB(x, y);
         int blue =   clr & 0x000000ff;
         return blue;
     }
 
+    /**
+     * Sprawdza poprawność koloru
+     *
+     * @param newColor sprawdzany kolor
+     * @return nowy, poprawiony kolor
+     */
     public int checkColor(int newColor){
         if(newColor<0){
             newColor=0;
@@ -90,6 +156,12 @@ public class MyImage {
         return newColor;
     }
 
+    /**
+     * Kopiuje obraz
+     *
+     * @param image obraz
+     * @return powielony obraz
+     */
     static BufferedImage copyImage(BufferedImage image) {
         ColorModel cm = image.getColorModel();
         boolean isRasterPremultiplied = cm.isAlphaPremultiplied();
@@ -97,10 +169,18 @@ public class MyImage {
         return new BufferedImage(cm, raster, isRasterPremultiplied, null);
     }
 
+    /**
+     * Kopiuje obraz klasy myImage
+     * @param myImage obraz
+     */
     void copy(MyImage myImage){
         this.pngImage= copyImage(myImage.getPngImage());
     }
 
+    /**
+     * Przeprowadza filtrację obrazu
+     * @param filter wybrany filtr
+     */
     public void addFilter(Filter filter){
         BufferedImage imageBefore= this.copyImage(pngImage);
         int newColorRed;
@@ -132,7 +212,11 @@ public class MyImage {
         filterOnEdge(filter);
     }
 
-
+    /**
+     * Przeprowadza specjalną filtrację na rogach
+     *
+     * @param filter wybrany filtr
+     */
     public void filterInCorners(Filter filter) {
         int newColorRed;
         int newColorGreen;
@@ -209,6 +293,11 @@ public class MyImage {
         pngImage.setRGB(pngImage.getWidth()-1, pngImage.getHeight()-1,newColor);
     }
 
+    /**
+     * Przeprowadza specjalną filtrację na krawędziach
+     *
+     * @param filter wybrany filtr
+     */
     public void filterOnEdge(Filter filter) {
         int newColorRed;
         int newColorGreen;
@@ -293,6 +382,12 @@ public class MyImage {
         }
     }
 
+    /**
+     * Zapisuje obraz
+     *
+     * @param file plik docelowy
+     * @throws IOException
+     */
     void savePngImage(File file) throws IOException {
         //File file = new File(fileName);
         ImageIO.write(this.getPngImage(), "png", file);

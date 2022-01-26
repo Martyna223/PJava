@@ -1,15 +1,14 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-
+/**
+ * Tworzy GUI
+ */
 public class MyFrame3 extends JFrame implements ActionListener {
     JButton selectFileButton;
     JButton button1;
@@ -43,7 +42,11 @@ public class MyFrame3 extends JFrame implements ActionListener {
     Image3D imagesBefore;
     Image3D imagesAfter;
 
-
+    /**
+     * Główny konstruktor klasy
+     *
+     * @throws IOException
+     */
     MyFrame3() throws IOException {
         i=0;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -189,6 +192,10 @@ public class MyFrame3 extends JFrame implements ActionListener {
         this.changeState(false);
     }
 
+    /**
+     * Włącza i wyłącza przyciski
+     * @param state pożądany stan
+     */
     public void changeState(boolean state){
         this.button1.setEnabled(state);
         this.button2.setEnabled(state);
@@ -208,6 +215,10 @@ public class MyFrame3 extends JFrame implements ActionListener {
         this.textField7.setEnabled(state);
         this.textField8.setEnabled(state);
     }
+
+    /**
+     * Aktualizuje obraz
+     */
     public void upDate(){
         panel2.setVisible(false);
         picBefore=imagesBefore.myImages.get(i);
@@ -220,6 +231,10 @@ public class MyFrame3 extends JFrame implements ActionListener {
         panel2.setVisible(true);
     }
 
+    /**
+     * Obsługuje zdarzenia wywołane przez użytkownika
+     * @param e zdarzenie
+     */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == selectBox) {
             int a = ((JComboBox) e.getSource()).getSelectedIndex();
@@ -264,8 +279,6 @@ public class MyFrame3 extends JFrame implements ActionListener {
         } else if (e.getSource() == button1) {
             panel2.setVisible(false);
             picAfter.copy(imagesBefore.myImages.get(i));
-
-            //imagesAfter.myImages.set(i, picBefore);
             upDate();
             panel2.setVisible(true);
 

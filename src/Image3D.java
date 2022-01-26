@@ -1,20 +1,21 @@
-import com.pixelmed.display.SourceImage;
-import reader.OverriddenSingleImagePanelForDemo;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Klasa umożliwiająca wczytywanie obrazu warstwowego - tomogramu
+ */
 public class Image3D  {
 
+    /**
+     * kontener z serią obrazów
+     */
     ArrayList<MyImage> myImages= new ArrayList<>();
 
+    /**
+     * Podstawowy konstruktor wczytujący serię obrazów do kontenera
+     * @param dir ścieżka do folderu z plikami
+     */
     public Image3D(String dir) {
         String dirPathname = dir;
         File directory = new File(dirPathname);
@@ -33,6 +34,4 @@ public class Image3D  {
         }
         Arrays.stream(files).close();
     }
-
-
 }

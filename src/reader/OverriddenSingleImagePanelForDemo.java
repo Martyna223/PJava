@@ -1,5 +1,4 @@
 package reader;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
@@ -10,6 +9,9 @@ import com.pixelmed.display.event.FrameSelectionChangeEvent;
 import com.pixelmed.event.ApplicationEventDispatcher;
 import com.pixelmed.event.EventContext;
 
+/**
+ * Obsługuje przełączanie serii zdjęć
+ */
 public class OverriddenSingleImagePanelForDemo extends SingleImagePanel {
 
     //initialize these to some default values
@@ -17,6 +19,11 @@ public class OverriddenSingleImagePanelForDemo extends SingleImagePanel {
     private int frameIndex = 0;
     private int MaxFrames = 1;
 
+    /**
+     * Ustawia liczbę klatek
+     *
+     * @param sImg obraz źródłowy
+     */
     public OverriddenSingleImagePanelForDemo(SourceImage sImg) {
         super(sImg);
         MaxFrames = sImg.getNumberOfFrames();
@@ -29,6 +36,10 @@ public class OverriddenSingleImagePanelForDemo extends SingleImagePanel {
                 + " Frame Index->" + frameIndexNumber;
     }
 
+    /**
+     * Przechodzi pomiędzy zdjęciami
+     * @param e wcisnięty przycisk
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         super.keyPressed(e);
@@ -41,10 +52,17 @@ public class OverriddenSingleImagePanelForDemo extends SingleImagePanel {
 
     }
 
+    /**
+     * Aktualizuje wyświetlany obraz
+     */
     private void UpdateDisplayInformation() {
         this.sideAndViewAnnotationString = getTextToDisplay(frameIndex);
     }
 
+    /**
+     * Wywołuje aktualizację obrazu
+     * @param e zdarzenie
+     */
     @Override
     public void mouseDragged(MouseEvent e) {
         super.mouseDragged(e);
