@@ -10,7 +10,7 @@ import com.pixelmed.event.ApplicationEventDispatcher;
 import com.pixelmed.event.EventContext;
 
 /**
- * Obsługuje przełączanie serii zdjęć
+ * Obsluguje przelaczanie serii zdjęc
  */
 public class OverriddenSingleImagePanelForDemo extends SingleImagePanel {
 
@@ -20,9 +20,9 @@ public class OverriddenSingleImagePanelForDemo extends SingleImagePanel {
     private int MaxFrames = 1;
 
     /**
-     * Ustawia liczbę klatek
+     * Ustawia liczbe klatek
      *
-     * @param sImg obraz źródłowy
+     * @param sImg obraz zródłowy
      */
     public OverriddenSingleImagePanelForDemo(SourceImage sImg) {
         super(sImg);
@@ -37,8 +37,8 @@ public class OverriddenSingleImagePanelForDemo extends SingleImagePanel {
     }
 
     /**
-     * Przechodzi pomiędzy zdjęciami
-     * @param e wcisnięty przycisk
+     * Przechodzi pomiedzy zdjeciami
+     * @param e wcisniety przycisk
      */
     @Override
     public void keyPressed(KeyEvent e) {
@@ -53,14 +53,14 @@ public class OverriddenSingleImagePanelForDemo extends SingleImagePanel {
     }
 
     /**
-     * Aktualizuje wyświetlany obraz
+     * Aktualizuje wyswietlany obraz
      */
     private void UpdateDisplayInformation() {
         this.sideAndViewAnnotationString = getTextToDisplay(frameIndex);
     }
 
     /**
-     * Wywołuje aktualizację obrazu
+     * Wywoluje aktualizacje obrazu
      * @param e zdarzenie
      */
     @Override

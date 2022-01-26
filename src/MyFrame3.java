@@ -43,7 +43,7 @@ public class MyFrame3 extends JFrame implements ActionListener {
     Image3D imagesAfter;
 
     /**
-     * Główny konstruktor klasy
+     * Glowny konstruktor klasy
      *
      * @throws IOException
      */
@@ -193,8 +193,8 @@ public class MyFrame3 extends JFrame implements ActionListener {
     }
 
     /**
-     * Włącza i wyłącza przyciski
-     * @param state pożądany stan
+     * Wlacza i wylacza przyciski
+     * @param state pozadany stan
      */
     public void changeState(boolean state){
         this.button1.setEnabled(state);
@@ -232,7 +232,7 @@ public class MyFrame3 extends JFrame implements ActionListener {
     }
 
     /**
-     * Obsługuje zdarzenia wywołane przez użytkownika
+     * Obsluguje zdarzenia wywolane przez uzytkownika
      * @param e zdarzenie
      */
     public void actionPerformed(ActionEvent e) {

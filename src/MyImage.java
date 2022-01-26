@@ -9,8 +9,8 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Przechowuje parametry obrazów
- * @param pngImage przetwarzane zdjęcie
+ * Przechowuje parametry obrazow
+ * @param pngImage przetwarzane zdjecie
  */
 public class MyImage {
 
@@ -37,7 +37,7 @@ public class MyImage {
     /**
      * Ustawia obraz
      *
-     * @param img źródłowy obraz
+     * @param img zrodlowy obraz
      */
     public MyImage(BufferedImage img){
         this.pngImage=img;
@@ -46,25 +46,25 @@ public class MyImage {
     /**
      * Ustawia obraz w formacie png
      *
-     * @param image źródłowy obraz
+     * @param image zrodlowy obraz
      */
     public void setPngImage(BufferedImage image){
         this.pngImage =image;
     }
 
     /**
-     * Pobiera szerokość obrazu
+     * Pobiera szerokosc obrazu
      *
-     * @return szerokość obrazu
+     * @return szerokosc obrazu
      */
     public int getWidth(){
         return pngImage.getWidth();
     }
 
     /**
-     * Pobiera wysokość obrazu
+     * Pobiera wysokosc obrazu
      *
-     * @return wysokość obrazu
+     * @return wysokosc obrazu
      */
     public int getHeight(){
         return pngImage.getHeight();
@@ -82,9 +82,9 @@ public class MyImage {
     /**
      * Pobiera kolor piksela
      *
-     * @param x współrzędna X piksela
-     * @param y współrzędna Y piksela
-     * @param image obraz, z którego pobierany jest kolor
+     * @param x wspolrzedna X piksela
+     * @param y wspolrzedna Y piksela
+     * @param image obraz, z ktorego pobierany jest kolor
      */
     public void getPixelColor(int x, int y, BufferedImage image){
         int clr = image.getRGB(x, y);
@@ -97,12 +97,12 @@ public class MyImage {
     }
 
     /**
-     * Pobiera składową czerwoną piksela
+     * Pobiera skladowa czerwona piksela
      *
-     * @param x współrzędna X piksela
-     * @param y współrzędna Y piksela
-     * @param image obraz, z którego pobierany jest kolor
-     * @return składowa czerwona
+     * @param x wspolrzedna X piksela
+     * @param y wspolrzedna Y piksela
+     * @param image obraz, z ktorego pobierany jest kolor
+     * @return skladowa czerwona
      */
     public int getRedPixelComponent(int x, int y, BufferedImage image){
         int clr = image.getRGB(x, y);
@@ -112,12 +112,12 @@ public class MyImage {
 
 
     /**
-     * Pobiera składową zieloną piksela
+     * Pobiera skladowa zielona piksela
      *
-     * @param x współrzędna X piksela
-     * @param y współrzędna Y piksela
-     * @param image obraz, z którego pobierany jest kolor
-     * @return składowa zielona
+     * @param x wspolrzedna X piksela
+     * @param y wspolrzedna Y piksela
+     * @param image obraz, z ktorego pobierany jest kolor
+     * @return skladowa zielona
      */
     public int getGreenPixelComponent(int x, int y, BufferedImage image){
         int clr = image.getRGB(x, y);
@@ -126,12 +126,12 @@ public class MyImage {
     }
 
     /**
-     * Pobiera składową niebieską piksela
+     * Pobiera skladowa niebieska piksela
      *
-     * @param x współrzędna X piksela
-     * @param y współrzędna Y piksela
-     * @param image obraz, z którego pobierany jest kolor
-     * @return składowa niebieska
+     * @param x wspolrzedna X piksela
+     * @param y wspolrzedna Y piksela
+     * @param image obraz, z ktorego pobierany jest kolor
+     * @return skladowa niebieska
      */
     public int getBluePixelComponent(int x, int y, BufferedImage image){
         int clr = image.getRGB(x, y);
@@ -140,7 +140,7 @@ public class MyImage {
     }
 
     /**
-     * Sprawdza poprawność koloru
+     * Sprawdza poprawnosc koloru
      *
      * @param newColor sprawdzany kolor
      * @return nowy, poprawiony kolor
@@ -178,7 +178,7 @@ public class MyImage {
     }
 
     /**
-     * Przeprowadza filtrację obrazu
+     * Przeprowadza filtracje obrazu
      * @param filter wybrany filtr
      */
     public void addFilter(Filter filter){
@@ -213,7 +213,7 @@ public class MyImage {
     }
 
     /**
-     * Przeprowadza specjalną filtrację na rogach
+     * Przeprowadza specjalna filtracje na rogach
      *
      * @param filter wybrany filtr
      */
@@ -294,7 +294,7 @@ public class MyImage {
     }
 
     /**
-     * Przeprowadza specjalną filtrację na krawędziach
+     * Przeprowadza specjalna filtracje na krawedziach
      *
      * @param filter wybrany filtr
      */

@@ -4,7 +4,7 @@ import java.awt.image.Kernel;
 import java.awt.image.RenderedImage;
 
 /**
- * Reprezentacja filtrów Gabora - do detekcji krawędzi
+ * Reprezentacja filtrow Gabora - do detekcji krawedzi
  */
 public class GaborFilter {
 
@@ -22,13 +22,13 @@ public class GaborFilter {
     /**
      * Podstawowy konstruktor
      *
-     * @param waveLength długość fali
-     * @param orientations kierunek działania filtru
-     * @param phaseOffset przesunięcie fazowe - symetria
-     * @param aspectRatio współczynnik aspektu - eliptyczność
-     * @param bandwidth szerokość pasma
-     * @param width szerokość
-     * @param height wysokość
+     * @param waveLength dlugosc fali
+     * @param orientations kierunek dzialania filtru
+     * @param phaseOffset przesuniecie fazowe - symetria
+     * @param aspectRatio wspolczynnik aspektu - eliptycznosc
+     * @param bandwidth szerokosc pasma
+     * @param width szerokosc
+     * @param height wysokosc
      */
     public GaborFilter(double waveLength, double[] orientations, double phaseOffset, double aspectRatio, double bandwidth, int width, int height) {
         this.waveLength = waveLength;
@@ -41,7 +41,7 @@ public class GaborFilter {
     }
 
     /**
-     * Pobiera tablicę orientacji
+     * Pobiera tablice orientacji
      *
      * @return tablica orientacji
      */
@@ -50,7 +50,7 @@ public class GaborFilter {
     }
 
     /**
-     * Ustawia tablicę orientacji
+     * Ustawia tablice orientacji
      *
      * @param orientations nowa tablica orientacji
      */
@@ -59,18 +59,18 @@ public class GaborFilter {
     }
 
     /**
-     * Pobiera długość fali
+     * Pobiera dlugosc fali
      *
-     * @return długość fali
+     * @return dlugosc fali
      */
     public double getWaveLength() {
         return waveLength;
     }
 
     /**
-     * Ustawia długość fali
+     * Ustawia dlugosc fali
      *
-     * @param waveLength nowa długość fali
+     * @param waveLength nowa dlugosc fali
      */
     public void setWaveLength(double waveLength) {
         if(waveLength > 0) {
@@ -81,36 +81,36 @@ public class GaborFilter {
     }
 
     /**
-     * Pobiera przesunięcie fazowe
+     * Pobiera przesuniecie fazowe
      *
-     * @return przesunięcie fazowe
+     * @return przesuniecie fazowe
      */
     public double getPhaseOffset() {
         return phaseOffset;
     }
 
     /**
-     * Ustawia przesunięcie fazowe
+     * Ustawia przesuniecie fazowe
      *
-     * @param phaseOffset nowe przesunięcie fazowe
+     * @param phaseOffset nowe przesuniecie fazowe
      */
     public void setPhaseOffset(double phaseOffset) {
         this.phaseOffset = phaseOffset;
     }
 
     /**
-     * Pobiera współczynnik aspektu
+     * Pobiera wspolczynnik aspektu
      *
-     * @return współczynnik aspektu
+     * @return wspolczynnik aspektu
      */
     public double getAspectRatio() {
         return aspectRatio;
     }
 
     /**
-     * Ustawia współczynnik aspektu
+     * Ustawia wspolczynnik aspektu
      *
-     * @param aspectRatio nowy współczynnik aspektu
+     * @param aspectRatio nowy wspolczynnik aspektu
      */
     public void setAspectRatio(double aspectRatio) {
         if(aspectRatio <= MAX_ASPECT_RATIO && aspectRatio >= MIN_ASPECT_RATIO) {
@@ -122,28 +122,28 @@ public class GaborFilter {
     }
 
     /**
-     * Pobiera szerokość pasma
+     * Pobiera szerokosc pasma
      *
-     * @return szerokość pasma
+     * @return szerokosc pasma
      */
     public double getBandwidth() {
         return bandwidth;
     }
 
     /**
-     * Ustawia szerokość pasma
+     * Ustawia szerokosc pasma
      *
-     * @param bandwidth nowa szerokość pasma
+     * @param bandwidth nowa szerokosc pasma
      */
     public void setBandwidth(double bandwidth) {
         this.bandwidth = bandwidth;
     }
 
     /**
-     * Oblicza sigmę dla podanej długości fali oraz szerokości pasma
+     * Oblicza sigme dla podanej dlugosci fali oraz szerokosci pasma
      *
-     * @param waveLength długość fali
-     * @param bandwidth szerokość pasma
+     * @param waveLength dlugosc fali
+     * @param bandwidth szerokosc pasma
      * @return sigma (odchylenie standardowe)
      */
 
@@ -152,15 +152,15 @@ public class GaborFilter {
     }
 
     /**
-     * Oblicza wartości funkcji Gabora dla podanych danych
+     * Oblicza wartosci funkcji Gabora dla podanych danych
      *
      * @param x X
      * @param y Y
      * @param sigma sigma
-     * @param aspectRatio współczynnik aspektu
-     * @param waveLength długość fali
-     * @param phaseOffset przesunięcie fazowe
-     * @return wartość funkcji Gabora
+     * @param aspectRatio wspolczynnik aspektu
+     * @param waveLength dlugosc fali
+     * @param phaseOffset przesuniecie fazowe
+     * @return wartosc funkcji Gabora
      */
 
     private static double gaborFunction(double x, double y, double sigma, double aspectRatio, double waveLength, double phaseOffset) {
@@ -170,7 +170,7 @@ public class GaborFilter {
     }
 
     /**
-     * Zwraca obiekt ConvolveOp (implementację splotu)
+     * Zwraca obiekt ConvolveOp (implementacje splotu)
      *
      * @return ConvolveOp (implementacja splotu)
      */
@@ -179,9 +179,9 @@ public class GaborFilter {
     }
 
     /**
-     * Pobiera jądro filtru Gabora
+     * Pobiera jadro filtru Gabora
      *
-     * @return jądro
+     * @return jadro
      */
     public Kernel getKernel() {
         double sigma = calculateSigma(waveLength, bandwidth);
@@ -212,46 +212,46 @@ public class GaborFilter {
     }
 
     /**
-     * Pobiera szerokość
+     * Pobiera szerokosc
      *
-     * @return szerokość
+     * @return szerokosc
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Ustawia szerokość
+     * Ustawia szerokosc
      *
-     * @param width nowa szerokość
+     * @param width nowa szerokosc
      */
     public void setWidth(int width) {
         this.width = width;
     }
 
     /**
-     * Pobiera wysokość
+     * Pobiera wysokosc
      *
-     * @return wysokość
+     * @return wysokosc
      */
     public int getHeight() {
         return height;
     }
 
     /**
-     * Ustawia wysokość
+     * Ustawia wysokosc
      *
-     * @param height nowa wysokość
+     * @param height nowa wysokosc
      */
     public void setHeight(int height) {
         this.height = height;
     }
 
     /**
-     * Filtruje obiekt bufferedImage używając filtru Gabora. Jeśli bufferedImageDestination nie jest
-     * null, bufferedImage używany jest jako cel
+     * Filtruje obiekt bufferedImage uzywajac filtru Gabora. Jesli bufferedImageDestination nie jest
+     * null, bufferedImage uzywany jest jako cel
      *
-     * @param bufferedImage źródłowy bufferedImage
+     * @param bufferedImage zrodlowy bufferedImage
      * @param bufferedImageDestination docelowy bufferedImage
      * @return przetworzony obraz
      */

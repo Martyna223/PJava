@@ -1,13 +1,13 @@
 /**
-* Reprezentacja filtru macierzowego używajacego masek
+* Reprezentacja filtru macierzowego uzywajacego masek
  */
 public class Filter {
     /**
-     * macierz zawierająca maskę
+     * macierz zawierajaca maske
      */
     int[][] mask = new int[3][3];
     /**
-     * macierz zawierająca sumy znormalizowane
+     * macierz zawierajaca sumy znormalizowane
      */
     int[][] sums = new int[3][3];
 
@@ -25,7 +25,7 @@ public class Filter {
     }
 
     /**
-     * Konstruktor z podaną maską
+     * Konstruktor z podana maska
      *
      * @param mask maska
      */
@@ -44,7 +44,7 @@ public class Filter {
     }
 
     /**
-     * Pobiera maskę
+     * Pobiera maske
      *
      * @return maska
      */
@@ -53,7 +53,7 @@ public class Filter {
     }
 
     /**
-     * Ustawia maskę filtru
+     * Ustawia maske filtru
      *
      * @param mask maska
      */
@@ -63,13 +63,13 @@ public class Filter {
     }
 
     /**
-     * Oblicza współczynniki
+     * Oblicza wspolczynniki
      *
-     * @param start_row początkowy rząd
-     * @param end_row końcowy rząd
-     * @param start_column początkowa kolumna
-     * @param end_column końcowa kolumna
-     * @return macierz współczynników
+     * @param start_row poczatkowy rzad
+     * @param end_row koncowy rzad
+     * @param start_column poczatkowa kolumna
+     * @param end_column koncowa kolumna
+     * @return macierz wspolczynnikow
      */
     public int makeSum(int start_row, int end_row, int start_column, int end_column) {
         int sum = 0;
@@ -82,10 +82,10 @@ public class Filter {
     }
 
     /**
-     * Normalizuje współczynniki
+     * Normalizuje wspolczynniki
      *
-     * @param sum współczynniki do znormalizowania
-     * @return macierz znormalizowanych współczynników
+     * @param sum wspolczynniki do znormalizowania
+     * @return macierz znormalizowanych wspolczynnikow
      */
     public int correctSum(int sum) {
         if (sum==0){
@@ -98,7 +98,7 @@ public class Filter {
     }
 
     /**
-     * Liczy sumy dla poszczególnych miejsc macierzy
+     * Liczy sumy dla poszczegolnych miejsc macierzy
      */
     public void setSums() {
         setCenterSum();
@@ -113,7 +113,7 @@ public class Filter {
     }
 
     /**
-     * Oblicza sumę w środkowu
+     * Oblicza sume w srodku
      */
     public void setCenterSum() {
         this.sums[1][1] = this.makeSum(0, 2, 0, 2);
@@ -121,7 +121,7 @@ public class Filter {
     }
 
     /**
-     * Oblicza sumę w prawym górnym narożniku
+     * Oblicza sume w prawym gornym narozniku
      */
     public void setRightUpSum() {
         this.sums[0][2] = this.makeSum(0, 1, 1, 2);
@@ -129,7 +129,7 @@ public class Filter {
     }
 
     /**
-     * Oblicza sumę w lewym górnym narożniku
+     * Oblicza sume w lewym gornym narozniku
      */
     public void setLeftUpSum() {
         this.sums[0][0] = this.makeSum(0, 1, 0, 1);
@@ -137,7 +137,7 @@ public class Filter {
     }
 
     /**
-     * Oblicza sumę w prawym dolnym narożniku
+     * Oblicza sume w prawym dolnym narozniku
      */
     public void setRightDownSum() {
         this.sums[2][2] = this.makeSum(1, 2, 1, 2);
@@ -145,7 +145,7 @@ public class Filter {
     }
 
     /**
-     * Oblicza sumę w lewym dolnym narożniku
+     * Oblicza sume w lewym dolnym narozniku
      */
     public void setLeftDownSum() {
         this.sums[2][0] = this.makeSum(1, 2, 0, 1);
@@ -153,7 +153,7 @@ public class Filter {
     }
 
     /**
-     * Oblicza sumę w górnym środkowym polu
+     * Oblicza sume w gornym srodkowym polu
      */
     public void setUpSum() {
         this.sums[0][1] = this.makeSum(1, 2, 0, 2);
@@ -161,7 +161,7 @@ public class Filter {
     }
 
     /**
-     * Oblicza sumę w lewym środkowym polu
+     * Oblicza sume w lewym srodkowym polu
      */
     public void setLeftSum() {
         this.sums[1][0] = this.makeSum(0, 2, 1, 2);
@@ -169,7 +169,7 @@ public class Filter {
     }
 
     /**
-     * Oblicza sumę w prawym środkowym polu
+     * Oblicza sume w prawym srodkowym polu
      */
     public void setRightSum() {
         this.sums[1][2] = this.makeSum(0, 2, 0, 1);
@@ -177,7 +177,7 @@ public class Filter {
     }
 
     /**
-     * Oblicza sumę w dolnym środkowym polu
+     * Oblicza sume w dolnym srodkowym polu
      */
     public void setDownSum() {
         this.sums[2][1] = this.makeSum(0, 1, 0, 2);
@@ -185,7 +185,7 @@ public class Filter {
     }
 
     /**
-     * Ustawia standardowy górnoprzepustowy filtr
+     * Ustawia standardowy gornoprzepustowy filtr
      */
     public void standardHighPassFilter() {
         int[][] maskHP = {{-1, -1, -1}, {-1, 14, -1}, {-1, -1, -1}};
@@ -225,7 +225,7 @@ public class Filter {
     }
 
     /**
-     * Ustawia filtr ukośny
+     * Ustawia filtr ukosny
      */
     public void diagonalFilter() {
         int[][] diagonalMask = {{-1, 0, 0}, {0, 1, 0}, {0, 0, 0}};
@@ -273,7 +273,7 @@ public class Filter {
     }
 
     /**
-     * Ustawia filtr "nic-nie-robiący"
+     * Ustawia filtr "nic-nie-robiacy"
      */
     public void noEffectFilter() {
         int[][] doingNothing = {{0, 0, 0}, {0, 1, 0}, {0, 0, 0}};

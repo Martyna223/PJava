@@ -3,18 +3,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Klasa umożliwiająca wczytywanie obrazu warstwowego - tomogramu
+ * Klasa umozliwiajaca wczytywanie obrazu warstwowego - tomogramu
  */
 public class Image3D  {
 
     /**
-     * kontener z serią obrazów
+     * kontener z seria obrazow
      */
     ArrayList<MyImage> myImages= new ArrayList<>();
 
     /**
-     * Podstawowy konstruktor wczytujący serię obrazów do kontenera
-     * @param dir ścieżka do folderu z plikami
+     * Podstawowy konstruktor wczytujacy serie obrazow do kontenera
+     * @param dir sciezka do folderu z plikami
      */
     public Image3D(String dir) {
         String dirPathname = dir;
